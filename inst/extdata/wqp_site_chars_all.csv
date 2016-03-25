@@ -1,0 +1,239 @@
+siteType,characteristicType,numSites,numRecords,totalNumUniqueSites
+Aggregate surface-water-use,Biological,288,1093,5727
+Aggregate surface-water-use,Information,417,2350,5727
+Aggregate surface-water-use,"Inorganics, Major, Metals",254,21194,5727
+Aggregate surface-water-use,"Inorganics, Major, Non-metals",574,28240,5727
+Aggregate surface-water-use,"Inorganics, Minor, Metals",638,58236,5727
+Aggregate surface-water-use,"Inorganics, Minor, Non-metals",577,14024,5727
+Aggregate surface-water-use,Microbiological,2358,13939,5727
+Aggregate surface-water-use,Nutrient,1072,41955,5727
+Aggregate surface-water-use,"Organics, Other",764,42879,5727
+Aggregate surface-water-use,"Organics, PCBs",228,4164,5727
+Aggregate surface-water-use,"Organics, Pesticide",681,28788,5727
+Aggregate surface-water-use,Physical,1855,136055,5727
+Aggregate surface-water-use,Population/Community,0,0,5727
+Aggregate surface-water-use,Radiochemical,9,1925,5727
+Aggregate surface-water-use,Sediment,233,668,5727
+Aggregate surface-water-use,Stable Isotopes,0,0,5727
+Aggregate surface-water-use,Toxicity,1,3,5727
+Aggregate groundwater use,Biological,3,5,26985
+Aggregate groundwater use,Information,43,2639,26985
+Aggregate groundwater use,"Inorganics, Major, Metals",2042,96142,26985
+Aggregate groundwater use,"Inorganics, Major, Non-metals",2578,83828,26985
+Aggregate groundwater use,"Inorganics, Minor, Metals",1992,222571,26985
+Aggregate groundwater use,"Inorganics, Minor, Non-metals",2252,65826,26985
+Aggregate groundwater use,Microbiological,53,1182,26985
+Aggregate groundwater use,Nutrient,1493,16075,26985
+Aggregate groundwater use,"Organics, Other",525,100799,26985
+Aggregate groundwater use,"Organics, PCBs",360,8034,26985
+Aggregate groundwater use,"Organics, Pesticide",443,116649,26985
+Aggregate groundwater use,Physical,3558,262009,26985
+Aggregate groundwater use,Population/Community,0,0,26985
+Aggregate groundwater use,Radiochemical,140,3869,26985
+Aggregate groundwater use,Sediment,3,82,26985
+Aggregate groundwater use,Stable Isotopes,0,0,26985
+Aggregate groundwater use,Toxicity,0,0,26985
+Atmosphere,Biological,1,1,5288
+Atmosphere,Information,2,27,5288
+Atmosphere,"Inorganics, Major, Metals",480,118218,5288
+Atmosphere,"Inorganics, Major, Non-metals",663,87052,5288
+Atmosphere,"Inorganics, Minor, Metals",394,31081,5288
+Atmosphere,"Inorganics, Minor, Non-metals",107,1584,5288
+Atmosphere,Microbiological,8,153,5288
+Atmosphere,Nutrient,596,124345,5288
+Atmosphere,"Organics, Other",152,3767,5288
+Atmosphere,"Organics, PCBs",15,4478,5288
+Atmosphere,"Organics, Pesticide",64,29898,5288
+Atmosphere,Physical,922,277719,5288
+Atmosphere,Population/Community,0,0,5288
+Atmosphere,Radiochemical,109,7745,5288
+Atmosphere,Sediment,10,95,5288
+Atmosphere,Stable Isotopes,209,2778,5288
+Atmosphere,Toxicity,0,0,5288
+Estuary,Biological,30745,1372247,74581
+Estuary,Information,29377,935394,74581
+Estuary,"Inorganics, Major, Metals",2249,63258,74581
+Estuary,"Inorganics, Major, Non-metals",9251,409113,74581
+Estuary,"Inorganics, Minor, Metals",12623,498653,74581
+Estuary,"Inorganics, Minor, Non-metals",10999,73164,74581
+Estuary,Microbiological,13683,1197041,74581
+Estuary,Nutrient,33448,2346081,74581
+Estuary,"Organics, Other",21152,539863,74581
+Estuary,"Organics, PCBs",8854,327073,74581
+Estuary,"Organics, Pesticide",9083,298876,74581
+Estuary,Physical,47620,18995836,74581
+Estuary,Population/Community,2,7,74581
+Estuary,Radiochemical,285,3447,74581
+Estuary,Sediment,294,6184,74581
+Estuary,Stable Isotopes,1887,44732,74581
+Estuary,Toxicity,3397,3692,74581
+Facility,Biological,228,8070,30428
+Facility,Information,606,6007,30428
+Facility,"Inorganics, Major, Metals",4909,114005,30428
+Facility,"Inorganics, Major, Non-metals",4200,109651,30428
+Facility,"Inorganics, Minor, Metals",10285,403090,30428
+Facility,"Inorganics, Minor, Non-metals",9570,62453,30428
+Facility,Microbiological,1966,117509,30428
+Facility,Nutrient,5109,532515,30428
+Facility,"Organics, Other",4149,379857,30428
+Facility,"Organics, PCBs",1252,54571,30428
+Facility,"Organics, Pesticide",2173,167261,30428
+Facility,Physical,9041,960244,30428
+Facility,Population/Community,1,8,30428
+Facility,Radiochemical,431,3893,30428
+Facility,Sediment,325,36838,30428
+Facility,Stable Isotopes,114,722,30428
+Facility,Toxicity,0,0,30428
+Glacier,Biological,0,0,14
+Glacier,Information,0,0,14
+Glacier,"Inorganics, Major, Metals",0,0,14
+Glacier,"Inorganics, Major, Non-metals",7,1634,14
+Glacier,"Inorganics, Minor, Metals",0,0,14
+Glacier,"Inorganics, Minor, Non-metals",0,0,14
+Glacier,Microbiological,1,2,14
+Glacier,Nutrient,6,954,14
+Glacier,"Organics, Other",0,0,14
+Glacier,"Organics, PCBs",0,0,14
+Glacier,"Organics, Pesticide",0,0,14
+Glacier,Physical,7,1539,14
+Glacier,Population/Community,0,0,14
+Glacier,Radiochemical,1,21,14
+Glacier,Sediment,0,0,14
+Glacier,Stable Isotopes,7,167,14
+Glacier,Toxicity,0,0,14
+"Lake, Reservoir, Impoundment",Biological,38369,1301445,135816
+"Lake, Reservoir, Impoundment",Information,46257,1649005,135816
+"Lake, Reservoir, Impoundment","Inorganics, Major, Metals",28381,890227,135816
+"Lake, Reservoir, Impoundment","Inorganics, Major, Non-metals",38558,2756902,135816
+"Lake, Reservoir, Impoundment","Inorganics, Minor, Metals",26635,1695487,135816
+"Lake, Reservoir, Impoundment","Inorganics, Minor, Non-metals",18307,252852,135816
+"Lake, Reservoir, Impoundment",Microbiological,17336,492432,135816
+"Lake, Reservoir, Impoundment",Nutrient,53338,4137680,135816
+"Lake, Reservoir, Impoundment","Organics, Other",21731,570861,135816
+"Lake, Reservoir, Impoundment","Organics, PCBs",4958,204764,135816
+"Lake, Reservoir, Impoundment","Organics, Pesticide",7043,559486,135816
+"Lake, Reservoir, Impoundment",Physical,66288,16172143,135816
+"Lake, Reservoir, Impoundment",Population/Community,146,1247,135816
+"Lake, Reservoir, Impoundment",Radiochemical,5809,36322,135816
+"Lake, Reservoir, Impoundment",Sediment,1605,27981,135816
+"Lake, Reservoir, Impoundment",Stable Isotopes,2224,33976,135816
+"Lake, Reservoir, Impoundment",Toxicity,23,173,135816
+Land,Biological,38,1205,11066
+Land,Information,237,4002,11066
+Land,"Inorganics, Major, Metals",2749,39983,11066
+Land,"Inorganics, Major, Non-metals",1900,26067,11066
+Land,"Inorganics, Minor, Metals",5044,93464,11066
+Land,"Inorganics, Minor, Non-metals",3874,13194,11066
+Land,Microbiological,551,4061,11066
+Land,Nutrient,2053,88119,11066
+Land,"Organics, Other",1943,69069,11066
+Land,"Organics, PCBs",353,5032,11066
+Land,"Organics, Pesticide",747,120977,11066
+Land,Physical,3714,96330,11066
+Land,Population/Community,2,7,11066
+Land,Radiochemical,1783,7152,11066
+Land,Sediment,145,3045,11066
+Land,Stable Isotopes,177,2150,11066
+Land,Toxicity,0,0,11066
+Ocean,Biological,2159,506516,33321
+Ocean,Information,2162,166756,33321
+Ocean,"Inorganics, Major, Metals",726,8257,33321
+Ocean,"Inorganics, Major, Non-metals",698,64004,33321
+Ocean,"Inorganics, Minor, Metals",2239,80065,33321
+Ocean,"Inorganics, Minor, Non-metals",2166,14641,33321
+Ocean,Microbiological,11860,3417975,33321
+Ocean,Nutrient,2815,306943,33321
+Ocean,"Organics, Other",2702,236228,33321
+Ocean,"Organics, PCBs",1264,244625,33321
+Ocean,"Organics, Pesticide",1686,122520,33321
+Ocean,Physical,7232,8021583,33321
+Ocean,Population/Community,0,0,33321
+Ocean,Radiochemical,77,234,33321
+Ocean,Sediment,89,402,33321
+Ocean,Stable Isotopes,510,16574,33321
+Ocean,Toxicity,0,0,33321
+Spring,Biological,477,11009,37771
+Spring,Information,612,13422,37771
+Spring,"Inorganics, Major, Metals",13060,183473,37771
+Spring,"Inorganics, Major, Non-metals",15729,263200,37771
+Spring,"Inorganics, Minor, Metals",11589,228564,37771
+Spring,"Inorganics, Minor, Non-metals",8297,40409,37771
+Spring,Microbiological,1857,29683,37771
+Spring,Nutrient,11591,220904,37771
+Spring,"Organics, Other",2882,92129,37771
+Spring,"Organics, PCBs",172,1001,37771
+Spring,"Organics, Pesticide",1062,162079,37771
+Spring,Physical,18702,572589,37771
+Spring,Population/Community,15,45,37771
+Spring,Radiochemical,4338,20184,37771
+Spring,Sediment,52,461,37771
+Spring,Stable Isotopes,2353,9680,37771
+Spring,Toxicity,0,0,37771
+Stream,Biological,47010,2950791,508025
+Stream,Information,54319,1947474,508025
+Stream,"Inorganics, Major, Metals",128662,7563878,508025
+Stream,"Inorganics, Major, Non-metals",169039,12872974,508025
+Stream,"Inorganics, Minor, Metals",142548,14217208,508025
+Stream,"Inorganics, Minor, Non-metals",110181,2350676,508025
+Stream,Microbiological,87459,3230041,508025
+Stream,Nutrient,188201,21197143,508025
+Stream,"Organics, Other",88331,4489218,508025
+Stream,"Organics, PCBs",21857,1121216,508025
+Stream,"Organics, Pesticide",32966,7816215,508025
+Stream,Physical,275149,76267683,508025
+Stream,Population/Community,962,27827,508025
+Stream,Radiochemical,37411,295270,508025
+Stream,Sediment,29061,2978591,508025
+Stream,Stable Isotopes,6213,67201,508025
+Stream,Toxicity,138,452,508025
+Subsurface,Biological,25,129,3353
+Subsurface,Information,0,0,3353
+Subsurface,"Inorganics, Major, Metals",996,32490,3353
+Subsurface,"Inorganics, Major, Non-metals",1409,52099,3353
+Subsurface,"Inorganics, Minor, Metals",1049,95477,3353
+Subsurface,"Inorganics, Minor, Non-metals",800,12848,3353
+Subsurface,Microbiological,30,118,3353
+Subsurface,Nutrient,1053,44792,3353
+Subsurface,"Organics, Other",508,12128,3353
+Subsurface,"Organics, PCBs",6,11,3353
+Subsurface,"Organics, Pesticide",254,31191,3353
+Subsurface,Physical,1458,58934,3353
+Subsurface,Population/Community,0,0,3353
+Subsurface,Radiochemical,473,2974,3353
+Subsurface,Sediment,32,1439,3353
+Subsurface,Stable Isotopes,280,2941,3353
+Subsurface,Toxicity,0,0,3353
+Well,Biological,55,1475,1477929
+Well,Information,875,33883,1477929
+Well,"Inorganics, Major, Metals",196464,2266289,1477929
+Well,"Inorganics, Major, Non-metals",272667,3986915,1477929
+Well,"Inorganics, Minor, Metals",183705,2431081,1477929
+Well,"Inorganics, Minor, Non-metals",114380,555625,1477929
+Well,Microbiological,21453,121627,1477929
+Well,Nutrient,194552,2379789,1477929
+Well,"Organics, Other",69390,4821811,1477929
+Well,"Organics, PCBs",7271,42386,1477929
+Well,"Organics, Pesticide",45317,3761158,1477929
+Well,Physical,291892,4990535,1477929
+Well,Population/Community,10,10,1477929
+Well,Radiochemical,45193,315680,1477929
+Well,Sediment,236,2256,1477929
+Well,Stable Isotopes,21567,73984,1477929
+Well,Toxicity,5,41,1477929
+Wetland,Biological,799,11953,6547
+Wetland,Information,1222,29581,6547
+Wetland,"Inorganics, Major, Metals",2073,117457,6547
+Wetland,"Inorganics, Major, Non-metals",2608,84770,6547
+Wetland,"Inorganics, Minor, Metals",1854,82667,6547
+Wetland,"Inorganics, Minor, Non-metals",768,10306,6547
+Wetland,Microbiological,303,6999,6547
+Wetland,Nutrient,3082,305450,6547
+Wetland,"Organics, Other",1274,31665,6547
+Wetland,"Organics, PCBs",183,3103,6547
+Wetland,"Organics, Pesticide",355,37323,6547
+Wetland,Physical,3343,323552,6547
+Wetland,Population/Community,0,0,6547
+Wetland,Radiochemical,103,470,6547
+Wetland,Sediment,52,1033,6547
+Wetland,Stable Isotopes,79,651,6547
+Wetland,Toxicity,4,4,6547
