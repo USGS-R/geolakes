@@ -1,5 +1,6 @@
 ## stacked bar plot where number of records are plotted by site type and characteristic type
 
+library(plyr)
 library(dplyr)
 library(ggplot2)
 
