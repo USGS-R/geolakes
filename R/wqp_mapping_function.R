@@ -33,8 +33,7 @@ counts.by.id[!is.finite(counts.by.id)] <- 0
 
 ## -- color markers -- 
 bins = pretty(counts.by.id, 100)
-key.bins = log(pretty(exp(counts.by.id), 10))
-key.bins[1] <- 0 
+key.bins = pretty(counts.by.id, 10)
 pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins))
 key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins))
 
@@ -64,5 +63,5 @@ text(.1,.5, 'Number of sites', pos=3, offset=0.1)
 for(i in 1:length(key.cols)){
   x1 = 0.20+(i-1)*(bin.w+spc)
   graphics::rect(x1, 0.3, x1+bin.w, 0.8, col=key.cols[i], lwd=NA)
-  text(x1+bin.w/2, y=0.33, labels=exp(key.bins[i]), pos=1)
+  text(x1+bin.w/2, y=0.33, labels=key.bins[i], pos=1)
 }
