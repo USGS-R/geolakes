@@ -3,7 +3,7 @@ library(stringr)
 library(dplyr)
 
 # Import Data
-data <- read.csv("inst/extdata/wqp_site_chars_all.csv")
+data <- read.csv("inst/extdata/wqp_sites_records_groupedby_sitetype.csv")
 
 # Filter data
 summary_big <- data %>% 
