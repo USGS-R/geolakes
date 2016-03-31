@@ -1,0 +1,18 @@
+phosphorus: 
+  characteristicName: 'Phosphorus'
+
+nitrogen: 
+  characteristicName: 'Nitrogen'
+
+arsenic: 
+  characteristicName: 'Arsenic'
+
+chlorophyll:  
+  characteristicName: ["Chlorophyll", "Chlorophyll A", "Chlorophyll a","Chlorophyll a (probe relative fluorescence)","Chlorophyll a (probe)","Chlorophyll a - Periphyton (attached)", "Chlorophyll a - Phytoplankton (suspended)", "Chlorophyll a, corrected for pheophytin", "Chlorophyll a, free of pheophytin", "Chlorophyll a, uncorrected for pheophytin", "Chlorophyll b", "Chlorophyll c", "Chlorophyll/Pheophytin ratio"]
+  
+  
+lakes: 
+  siteType: "Lake, Reservoir, Impoundment"
+  
+all: null
+

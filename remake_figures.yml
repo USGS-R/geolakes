@@ -1,0 +1,89 @@
+packages:
+  - rgeos
+  - dplyr
+  - rgdal
+  - httr
+  - yaml
+  - RColorBrewer
+  - dataRetrieval
+  
+## All R files that are used must be listed here:
+sources:
+  - R/wqp_mapping_functions.R
+
+targets:
+  all:
+    depends: 
+      - figures/phosphorus_lakes.png
+      - figures/phosphorus_all.png
+      - figures/nitrogen_lakes.png
+      - figures/nitrogen_all.png
+      - figures/arsenic_lakes.png
+      - figures/arsenic_all.png
+      - figures/chlorophyll_lakes.png
+      - figures/chlorophyll_all.png
+      
+  map.config:
+    command: yaml.load_file("configs/mapping.yml")
+    
+  wqp.config:
+    command: yaml.load_file("configs/wqp_params.yml")
+  
+  huc.map:
+    command: get_mutate_HUC8s(map.config)
+
+  phosphorus_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+
+  phosphorus_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  nitrogen_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  nitrogen_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  arsenic_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  arsenic_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+  
+  chlorophyll_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  chlorophyll_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+  
+  figures/phosphorus_lakes.png:
+    command: plot_huc_sites(huc.map, phosphorus_lakes, map.config, target_name)
+    plot: true
+    
+  figures/phosphorus_all.png:
+    command: plot_huc_sites(huc.map, phosphorus_all, map.config, target_name)
+    plot: true
+    
+  figures/nitrogen_lakes.png:
+    command: plot_huc_sites(huc.map, nitrogen_lakes, map.config, target_name)
+    plot: true
+    
+  figures/nitrogen_all.png:
+    command: plot_huc_sites(huc.map, nitrogen_all, map.config, target_name)
+    plot: true
+    
+  figures/arsenic_lakes.png:
+    command: plot_huc_sites(huc.map, arsenic_lakes, map.config, target_name)
+    plot: true
+    
+  figures/arsenic_all.png:
+    command: plot_huc_sites(huc.map, arsenic_all, map.config, target_name)
+    plot: true
+    
+  figures/chlorophyll_lakes.png:
+    command: plot_huc_sites(huc.map, chlorophyll_lakes, map.config, target_name)
+    plot: true
+    
+  figures/chlorophyll_all.png:
+    command: plot_huc_sites(huc.map, chlorophyll_all, map.config, target_name)
+    plot: true
