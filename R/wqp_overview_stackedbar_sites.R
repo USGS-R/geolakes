@@ -3,7 +3,7 @@
 library(dplyr)
 library(ggplot2)
 
-data <- read.csv("inst/extdata/wqp_site_chars_all.csv")
+data <- read.csv("inst/extdata/wqp_sites_records_groupedby_sitetype.csv")
 
 data_sites <- data %>%  
   mutate(percentSites = (numSites/totalNumUniqueSites)*100)

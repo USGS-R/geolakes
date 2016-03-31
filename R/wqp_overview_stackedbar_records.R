@@ -4,7 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(gridExtra)
 
-data <- read.csv("inst/extdata/wqp_site_chars_all.csv")
+data <- read.csv("inst/extdata/wqp_sites_records_groupedby_sitetype.csv")
 
 summary_big <- data %>% 
   group_by(siteType) %>% 
