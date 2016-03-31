@@ -32,13 +32,16 @@ counts.by.id[!is.finite(counts.by.id)] <- 0
 
 
 ## -- color markers -- 
-bins = pretty(counts.by.id, 100)
-key.bins = pretty(counts.by.id, 10)
+
+key.bins = log(axTicks(1, axp=c(1, max(exp(counts.by.id)), 3), usr=c(1,3), log=TRUE))
+bins = key.bins
 pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins))
 key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins))
 
 pal[1] <- missing.data # 0 is grey
 key.cols[1] <- missing.data  # 0 is grey
+key.text <- exp(key.bins)
+key.text[1] <- 0
 #get closest bin
 bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),NA,which.min(abs(x-bins)))))
 cols = rep(NA, length(counts.by.id))
@@ -52,7 +55,6 @@ xlim <- c(-1534607.9,2050000.1) # specific to the transform we are using
 ylim <- c(-2072574.6,727758.7)
 
 plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
-#plot(sp2, add = TRUE, col='red', pch=20, cex=0.5)
 
 
 # secondary plot for color legend
@@ -63,5 +65,5 @@ text(.1,.5, 'Number of sites', pos=3, offset=0.1)
 for(i in 1:length(key.cols)){
   x1 = 0.20+(i-1)*(bin.w+spc)
   graphics::rect(x1, 0.3, x1+bin.w, 0.8, col=key.cols[i], lwd=NA)
-  text(x1+bin.w/2, y=0.33, labels=key.bins[i], pos=1)
+  text(x1+bin.w/2, y=0.33, labels=key.text[i], pos=1)
 }
