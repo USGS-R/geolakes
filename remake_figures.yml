@@ -1,0 +1,27 @@
+packages:
+  - rgeos
+  - dplyr
+  - rgdal
+  - httr
+  - yaml
+  - RColorBrewer
+  - dataRetrieval
+  
+## All R files that are used must be listed here:
+sources:
+  - R/wqp_mapping_functions.R
+
+targets:
+  all:
+    depends: 
+       - huc.map
+      ##- figures/phosphourus_lakes.png
+      ##- figures/phosphourus_all.png
+      ##- figures/chlorophyll_lakes.png
+      ##- figures/chlorophyll_all.png
+      
+  map.config:
+    command: yaml.load_file("configs/mapping.yml")
+  
+  huc.map:
+    command: get_mutate_HUC8s(map.config)

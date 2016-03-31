@@ -1,0 +1,75 @@
+library(rgeos)
+library(rgdal)
+library(httr)
+library(dplyr)
+library(RColorBrewer)
+library(dataRetrieval)
+
+missing.data = 'grey90'
+plot.CRS <- "+init=epsg:2163"
+
+get_mutate_HUC8s <- function(config){
+  destination = tempfile(pattern = 'huc_shape', fileext='.zip')
+  query <- sprintf('%s?service=WFS&request=GetFeature&typeName=%s&outputFormat=shape-zip&version=1.0.0', config$wfs, config$feature)
+  file <- GET(query, write_disk(destination, overwrite=T), progress())
+  shp.path <- tempdir()
+  unzip(destination, exdir = shp.path)
+  hucs = readOGR(shp.path, layer='wbdhu8_alb_simp') %>% 
+    spTransform(CRS(config$plot_CRS))
+  unlink(destination)
+  return(hucs)
+}
+
+# 
+# 
+# lake.sites <- whatWQPsites(characteristicName='Phosphorus') %>% 
+#   select(LongitudeMeasure, LatitudeMeasure) %>% 
+#   rename(lon=LongitudeMeasure, lat=LatitudeMeasure) %>% data.frame
+# 
+# sp2 <- SpatialPoints(lake.sites, proj4string=CRS("+proj=longlat + datum=wgs84")) %>% 
+#   spTransform(CRS(plot.CRS))
+# 
+# ## -- analyze point in polygon /--
+# point.in = gContains(hucs, sp2, byid=TRUE)
+# counts.by.id = colSums(point.in) %>% 
+#   log 
+# 
+# counts.by.id[!is.finite(counts.by.id)] <- 0
+# 
+# 
+# ## -- color markers -- 
+# 
+# key.bins = log(axTicks(1, axp=c(1, max(exp(counts.by.id)), 3), usr=c(1,3), log=TRUE))
+# bins = key.bins
+# pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins))
+# key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins))
+# 
+# pal[1] <- missing.data # 0 is grey
+# key.cols[1] <- missing.data  # 0 is grey
+# key.text <- exp(key.bins)
+# key.text[1] <- 0
+# #get closest bin
+# bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),NA,which.min(abs(x-bins)))))
+# cols = rep(NA, length(counts.by.id))
+# cols[!is.na(bin)] = pal[bin[!is.na(bin)]]
+# 
+# layout(matrix(data = c(1,1,1,1,1,1,2), ncol=1))
+# par(mai = c(0,0,0,0), omi = c(0,0,0,0))
+# par(mai = c(0,0,0,0), omi = c(0,0,0,0))
+# 
+# xlim <- c(-1534607.9,2050000.1) # specific to the transform we are using
+# ylim <- c(-2072574.6,727758.7)
+# 
+# plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
+# 
+# 
+# # secondary plot for color legend
+# plot(c(NA,NA),c(NA,NA), axes=F, ylim=c(0,1),xlim=c(0,1))
+# bin.w = 0.04
+# spc = .02
+# text(.1,.5, 'Number of sites', pos=3, offset=0.1)
+# for(i in 1:length(key.cols)){
+#   x1 = 0.20+(i-1)*(bin.w+spc)
+#   graphics::rect(x1, 0.3, x1+bin.w, 0.8, col=key.cols[i], lwd=NA)
+#   text(x1+bin.w/2, y=0.33, labels=key.text[i], pos=1)
+# }
