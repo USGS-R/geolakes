@@ -58,7 +58,7 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
   cols = rep(NA, length(counts.by.id))
   cols[!is.na(bin)] = pal[bin[!is.na(bin)]]
 
-  png(filename = figure.name, width = 7, heigh=5, res=300, units = 'in')
+  png(filename = figure.name, width = 7, heigh=5, res=150, units = 'in')
   layout(matrix(data = c(1,1,1,1,1,1,2), ncol=1))
   par(mai = c(0,0,0,0), omi = c(0,0,0,0))
   par(mai = c(0,0,0,0), omi = c(0,0,0,0))
