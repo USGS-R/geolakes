@@ -24,6 +24,8 @@ targets:
       - figures/chlorophyll_all.png
       - figures/temperature_lakes.png
       - figures/temperature_all.png
+      - figures/doc_lakes.png
+      - figures/doc_all.png
       
   map.config:
     command: yaml.load_file("configs/mapping.yml")
@@ -64,6 +66,12 @@ targets:
   temperature_all:
     command: get_wqp_data(target_name, wqp.config, map.config)
   
+  doc_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  doc_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+  
   figures/phosphorus_lakes.png:
     command: plot_huc_sites(huc.map, phosphorus_lakes, map.config, target_name)
     plot: true
@@ -102,4 +110,12 @@ targets:
     
   figures/temperature_all.png:
     command: plot_huc_sites(huc.map, temperature_all, map.config, target_name)
+    plot: true
+    
+  figures/doc_lakes.png:
+    command: plot_huc_sites(huc.map, doc_lakes, map.config, target_name)
+    plot: true
+    
+  figures/doc_all.png:
+    command: plot_huc_sites(huc.map, doc_all, map.config, target_name)
     plot: true
