@@ -4,6 +4,9 @@ phosphorus:
 nitrogen: 
   characteristicName: 'Nitrogen'
 
+temperature: 
+  characteristicName: ["Temperature, sample", "Temperature, water","Temperature"]
+
 arsenic: 
   characteristicName: 'Arsenic'
 
