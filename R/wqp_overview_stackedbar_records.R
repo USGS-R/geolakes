@@ -66,6 +66,8 @@ data <- data %>%
 site_cols <- c('#1f78b4','#33a02c','#fb9a99',
                '#6a3d9a','#80b1d3','#ff7f00')
 
+# percent plot
+
 ggplot(data, aes(x = charTypeLabels, 
                  y = percentRecords, 
                  fill = display_siteType)) + 
@@ -77,5 +79,17 @@ ggplot(data, aes(x = charTypeLabels,
   scale_fill_manual(values = site_cols, name = "Site Type") +
   theme(axis.text.y = element_text(size = 8))  
   
+# absolute number of records plot
+
+ggplot(data, aes(x = charTypeLabels, 
+                 y = numRecords_siteType, 
+                 fill = display_siteType)) + 
+  ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
+  ylab('Number of Records') + xlab('Characteristic Type') +
+  geom_bar(stat="identity") + 
+  coord_flip() + 
+  theme_classic() + 
+  scale_fill_manual(values = site_cols, name = "Site Type") +
+  theme(axis.text.y = element_text(size = 8)) 
 
 
