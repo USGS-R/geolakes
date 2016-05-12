@@ -38,7 +38,8 @@ createRecordsBarchart <- function(records_data, type = "percent"){
                                      Radiochemical = "Radiochemical",
                                      Sediment = "Sediment",                    
                                      `Stable Isotopes` = "Stable Isotopes",
-                                     Toxicity = "Toxicity"))
+                                     Toxicity = "Toxicity",
+                                     Total = "Total"))
   
   totalNumRecords <- data_newcategories %>% 
     group_by(display_charType) %>% 
@@ -97,10 +98,3 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   
   return(records_plot)
 }
-
-
-
-
-
-
-

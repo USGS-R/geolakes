@@ -3,8 +3,20 @@
 library(dplyr)
 library(ggplot2)
 library(gtable)
+library(grid)
 
 records_data <- read.csv("inst/extdata/wqp_sites_records_groupedby_chartype.csv")
+records_data <- records_data %>% 
+  select(-totalNumUniqueSites)
+
+total_bar <- records_data %>% 
+  group_by(siteType) %>% 
+  summarize(numSites = sum(numSites),
+            numRecords = sum(numRecords)) %>% 
+  mutate(characteristicType = "Total") %>% 
+  select(characteristicType, everything())
+
+records_data <- rbind(records_data, total_bar)
 
 # created csv using dataRetrieval_headrequest.R (inside dataRetrieval package)
 data <- read.csv('inst/extdata/wqp_temporal_charTypes.csv', stringsAsFactors = FALSE)
@@ -36,6 +48,15 @@ data <- data %>%
   group_by(display_charType, year) %>% 
   summarize_each(funs = 'sum', c(numSites, numResults)) 
 
+total_sparkline <- data %>% 
+  group_by(year) %>% 
+  summarize(numSites = sum(numSites), 
+            numResults = sum(numResults)) %>% 
+  mutate(display_charType = "Total") %>% 
+  select(display_charType, everything())
+
+data <- rbind(data, total_sparkline)
+
 # get bar chart for number of records
 records_plot <- createRecordsBarchart(records_data) +
   guides(fill = guide_legend(title = NULL, nrow = 1, ncol = 6))
@@ -50,7 +71,9 @@ records_plot <- records_plot +
 # order the char types for temporal data, the same as the number of records data
 records_data_parsed <- records_plot$data 
 charType_order <- unlist(lapply(strsplit(rev(levels(records_data_parsed$charTypeLabels)), split = "\n"),'[', 1))
+charType_order <- c("Total", charType_order)
 data <- data %>% 
+  ungroup() %>% 
   mutate(display_charType = factor(display_charType, levels = charType_order, ordered = TRUE))
 
 # create the spark lines
