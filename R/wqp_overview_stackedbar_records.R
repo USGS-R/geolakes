@@ -88,7 +88,7 @@ createRecordsBarchart <- function(records_data, type = "percent"){
                                      y = numRecords_siteType, 
                                      fill = display_siteType)) + 
       ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
-      ylab('Number of Records') + xlab('Characteristic Type') +
+      ylab('Number of Records') + xlab('Characteristic Group') +
       geom_bar(stat="identity") + 
       coord_flip() + 
       theme_classic() + 
