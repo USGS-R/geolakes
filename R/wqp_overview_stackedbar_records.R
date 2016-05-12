@@ -73,8 +73,8 @@ createRecordsBarchart <- function(records_data, type = "percent"){
     records_plot <- ggplot(data, aes(x = charTypeLabels, 
                                      y = percentRecords, 
                                      fill = display_siteType)) + 
-      ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
-      ylab('Percent Site Type') + xlab('Characteristic Type') +
+      ggtitle('Distribution of WQP Records by Site Types and Characteristic Groups') +
+      ylab('Percent Site Type') + xlab('Characteristic Group') +
       geom_bar(stat="identity") + 
       coord_flip() + 
       theme_classic() + 
@@ -87,7 +87,7 @@ createRecordsBarchart <- function(records_data, type = "percent"){
     records_plot <- ggplot(data, aes(x = charTypeLabels, 
                                      y = numRecords_siteType, 
                                      fill = display_siteType)) + 
-      ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
+      ggtitle('Distribution of WQP Records by Site Types and Characteristic Groups') +
       ylab('Number of Records') + xlab('Characteristic Group') +
       geom_bar(stat="identity") + 
       coord_flip() + 
