@@ -107,7 +107,9 @@ g <- gtable_add_grob(g, ggplotGrob(sparklines),
 g <- gtable_add_rows(g, unit(1.5,"cm"))
 g <- gtable_add_grob(g, records_plot_legend,
                      t=7, l=4, b=7, r=4)
+
 grid.newpage()
+png('figures/records_w_sparklines.png')
 grid.draw(g)
 
 
