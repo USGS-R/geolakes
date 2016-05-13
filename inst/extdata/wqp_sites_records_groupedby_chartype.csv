@@ -1,0 +1,239 @@
+characteristicType,siteType,numSites,numRecords,totalNumUniqueSites
+Biological,Aggregate surface-water-use,288,1093,122881
+Biological,Aggregate groundwater use,3,5,122881
+Biological,Atmosphere,1,1,122881
+Biological,Estuary,30745,1372247,122881
+Biological,Facility,228,8070,122881
+Biological,Glacier,0,0,122881
+Biological,"Lake, Reservoir, Impoundment",38369,1301445,122881
+Biological,Land,38,1205,122881
+Biological,Ocean,2159,506516,122881
+Biological,Spring,477,11009,122881
+Biological,Stream,47010,2950791,122881
+Biological,Subsurface,25,129,122881
+Biological,Well,55,1475,122881
+Biological,Wetland,799,11953,122881
+Information,Aggregate surface-water-use,417,2350,138316
+Information,Aggregate groundwater use,43,2639,138316
+Information,Atmosphere,2,27,138316
+Information,Estuary,29377,935394,138316
+Information,Facility,606,6007,138316
+Information,Glacier,0,0,138316
+Information,"Lake, Reservoir, Impoundment",46257,1649005,138316
+Information,Land,237,4002,138316
+Information,Ocean,2162,166756,138316
+Information,Spring,612,13422,138316
+Information,Stream,54319,1947474,138316
+Information,Subsurface,0,0,138316
+Information,Well,875,33883,138316
+Information,Wetland,1222,29581,138316
+"Inorganics, Major, Metals",Aggregate surface-water-use,254,21194,388606
+"Inorganics, Major, Metals",Aggregate groundwater use,2042,96142,388606
+"Inorganics, Major, Metals",Atmosphere,480,118218,388606
+"Inorganics, Major, Metals",Estuary,2249,63258,388606
+"Inorganics, Major, Metals",Facility,4909,114005,388606
+"Inorganics, Major, Metals",Glacier,0,0,388606
+"Inorganics, Major, Metals","Lake, Reservoir, Impoundment",28381,890227,388606
+"Inorganics, Major, Metals",Land,2749,39983,388606
+"Inorganics, Major, Metals",Ocean,726,8257,388606
+"Inorganics, Major, Metals",Spring,13060,183473,388606
+"Inorganics, Major, Metals",Stream,128662,7563878,388606
+"Inorganics, Major, Metals",Subsurface,996,32490,388606
+"Inorganics, Major, Metals",Well,196464,2266289,388606
+"Inorganics, Major, Metals",Wetland,2073,117457,388606
+"Inorganics, Major, Non-metals",Aggregate surface-water-use,574,28240,525681
+"Inorganics, Major, Non-metals",Aggregate groundwater use,2578,83828,525681
+"Inorganics, Major, Non-metals",Atmosphere,663,87052,525681
+"Inorganics, Major, Non-metals",Estuary,9251,409113,525681
+"Inorganics, Major, Non-metals",Facility,4200,109651,525681
+"Inorganics, Major, Non-metals",Glacier,7,1634,525681
+"Inorganics, Major, Non-metals","Lake, Reservoir, Impoundment",38558,2756902,525681
+"Inorganics, Major, Non-metals",Land,1900,26067,525681
+"Inorganics, Major, Non-metals",Ocean,698,64004,525681
+"Inorganics, Major, Non-metals",Spring,15729,263200,525681
+"Inorganics, Major, Non-metals",Stream,169039,12872974,525681
+"Inorganics, Major, Non-metals",Subsurface,1409,52099,525681
+"Inorganics, Major, Non-metals",Well,272667,3986915,525681
+"Inorganics, Major, Non-metals",Wetland,2608,84770,525681
+"Inorganics, Minor, Metals",Aggregate surface-water-use,638,58236,406194
+"Inorganics, Minor, Metals",Aggregate groundwater use,1992,222571,406194
+"Inorganics, Minor, Metals",Atmosphere,394,31081,406194
+"Inorganics, Minor, Metals",Estuary,12623,498653,406194
+"Inorganics, Minor, Metals",Facility,10285,403090,406194
+"Inorganics, Minor, Metals",Glacier,0,0,406194
+"Inorganics, Minor, Metals","Lake, Reservoir, Impoundment",26635,1695487,406194
+"Inorganics, Minor, Metals",Land,5044,93464,406194
+"Inorganics, Minor, Metals",Ocean,2239,80065,406194
+"Inorganics, Minor, Metals",Spring,11589,228564,406194
+"Inorganics, Minor, Metals",Stream,142548,14217208,406194
+"Inorganics, Minor, Metals",Subsurface,1049,95477,406194
+"Inorganics, Minor, Metals",Well,183705,2431081,406194
+"Inorganics, Minor, Metals",Wetland,1854,82667,406194
+"Inorganics, Minor, Non-metals",Aggregate surface-water-use,577,14024,287554
+"Inorganics, Minor, Non-metals",Aggregate groundwater use,2252,65826,287554
+"Inorganics, Minor, Non-metals",Atmosphere,107,1584,287554
+"Inorganics, Minor, Non-metals",Estuary,10999,73164,287554
+"Inorganics, Minor, Non-metals",Facility,9570,62453,287554
+"Inorganics, Minor, Non-metals",Glacier,0,0,287554
+"Inorganics, Minor, Non-metals","Lake, Reservoir, Impoundment",18307,252852,287554
+"Inorganics, Minor, Non-metals",Land,3874,13194,287554
+"Inorganics, Minor, Non-metals",Ocean,2166,14641,287554
+"Inorganics, Minor, Non-metals",Spring,8297,40409,287554
+"Inorganics, Minor, Non-metals",Stream,110181,2350676,287554
+"Inorganics, Minor, Non-metals",Subsurface,800,12848,287554
+"Inorganics, Minor, Non-metals",Well,114380,555625,287554
+"Inorganics, Minor, Non-metals",Wetland,768,10306,287554
+Microbiological,Aggregate surface-water-use,2358,13939,160832
+Microbiological,Aggregate groundwater use,53,1182,160832
+Microbiological,Atmosphere,8,153,160832
+Microbiological,Estuary,13683,1197041,160832
+Microbiological,Facility,1966,117509,160832
+Microbiological,Glacier,1,2,160832
+Microbiological,"Lake, Reservoir, Impoundment",17336,492432,160832
+Microbiological,Land,551,4061,160832
+Microbiological,Ocean,11860,3417975,160832
+Microbiological,Spring,1857,29683,160832
+Microbiological,Stream,87459,3230041,160832
+Microbiological,Subsurface,30,118,160832
+Microbiological,Well,21453,121627,160832
+Microbiological,Wetland,303,6999,160832
+Nutrient,Aggregate surface-water-use,1072,41955,505610
+Nutrient,Aggregate groundwater use,1493,16075,505610
+Nutrient,Atmosphere,596,124345,505610
+Nutrient,Estuary,33448,2346081,505610
+Nutrient,Facility,5109,532515,505610
+Nutrient,Glacier,6,954,505610
+Nutrient,"Lake, Reservoir, Impoundment",53338,4137680,505610
+Nutrient,Land,2053,88119,505610
+Nutrient,Ocean,2815,306943,505610
+Nutrient,Spring,11591,220904,505610
+Nutrient,Stream,188201,21197143,505610
+Nutrient,Subsurface,1053,44792,505610
+Nutrient,Well,194552,2379789,505610
+Nutrient,Wetland,3082,305450,505610
+"Organics, Other",Aggregate surface-water-use,764,42879,217688
+"Organics, Other",Aggregate groundwater use,525,100799,217688
+"Organics, Other",Atmosphere,152,3767,217688
+"Organics, Other",Estuary,21152,539863,217688
+"Organics, Other",Facility,4149,379857,217688
+"Organics, Other",Glacier,0,0,217688
+"Organics, Other","Lake, Reservoir, Impoundment",21731,570861,217688
+"Organics, Other",Land,1943,69069,217688
+"Organics, Other",Ocean,2702,236228,217688
+"Organics, Other",Spring,2882,92129,217688
+"Organics, Other",Stream,88331,4489218,217688
+"Organics, Other",Subsurface,508,12128,217688
+"Organics, Other",Well,69390,4821811,217688
+"Organics, Other",Wetland,1274,31665,217688
+"Organics, PCBs",Aggregate surface-water-use,228,4164,46993
+"Organics, PCBs",Aggregate groundwater use,360,8034,46993
+"Organics, PCBs",Atmosphere,15,4478,46993
+"Organics, PCBs",Estuary,8854,327073,46993
+"Organics, PCBs",Facility,1252,54571,46993
+"Organics, PCBs",Glacier,0,0,46993
+"Organics, PCBs","Lake, Reservoir, Impoundment",4958,204764,46993
+"Organics, PCBs",Land,353,5032,46993
+"Organics, PCBs",Ocean,1264,244625,46993
+"Organics, PCBs",Spring,172,1001,46993
+"Organics, PCBs",Stream,21857,1121216,46993
+"Organics, PCBs",Subsurface,6,11,46993
+"Organics, PCBs",Well,7271,42386,46993
+"Organics, PCBs",Wetland,183,3103,46993
+"Organics, Pesticide",Aggregate surface-water-use,681,28788,102637
+"Organics, Pesticide",Aggregate groundwater use,443,116649,102637
+"Organics, Pesticide",Atmosphere,64,29898,102637
+"Organics, Pesticide",Estuary,9083,298876,102637
+"Organics, Pesticide",Facility,2173,167261,102637
+"Organics, Pesticide",Glacier,0,0,102637
+"Organics, Pesticide","Lake, Reservoir, Impoundment",7043,559486,102637
+"Organics, Pesticide",Land,747,120977,102637
+"Organics, Pesticide",Ocean,1686,122520,102637
+"Organics, Pesticide",Spring,1062,162079,102637
+"Organics, Pesticide",Stream,32966,7816215,102637
+"Organics, Pesticide",Subsurface,254,31191,102637
+"Organics, Pesticide",Well,45317,3761158,102637
+"Organics, Pesticide",Wetland,355,37323,102637
+Physical,Aggregate surface-water-use,1855,136055,739611
+Physical,Aggregate groundwater use,3558,262009,739611
+Physical,Atmosphere,922,277719,739611
+Physical,Estuary,47620,18995836,739611
+Physical,Facility,9041,960244,739611
+Physical,Glacier,7,1539,739611
+Physical,"Lake, Reservoir, Impoundment",66288,16172143,739611
+Physical,Land,3714,96330,739611
+Physical,Ocean,7232,8021583,739611
+Physical,Spring,18702,572589,739611
+Physical,Stream,275149,76267683,739611
+Physical,Subsurface,1458,58934,739611
+Physical,Well,291892,4990535,739611
+Physical,Wetland,3343,323552,739611
+Population/Community,Aggregate surface-water-use,0,0,1138
+Population/Community,Aggregate groundwater use,0,0,1138
+Population/Community,Atmosphere,0,0,1138
+Population/Community,Estuary,2,7,1138
+Population/Community,Facility,1,8,1138
+Population/Community,Glacier,0,0,1138
+Population/Community,"Lake, Reservoir, Impoundment",146,1247,1138
+Population/Community,Land,2,7,1138
+Population/Community,Ocean,0,0,1138
+Population/Community,Spring,15,45,1138
+Population/Community,Stream,962,27827,1138
+Population/Community,Subsurface,0,0,1138
+Population/Community,Well,10,10,1138
+Population/Community,Wetland,0,0,1138
+Radiochemical,Aggregate surface-water-use,9,1925,96683
+Radiochemical,Aggregate groundwater use,140,3869,96683
+Radiochemical,Atmosphere,109,7745,96683
+Radiochemical,Estuary,285,3447,96683
+Radiochemical,Facility,431,3893,96683
+Radiochemical,Glacier,1,21,96683
+Radiochemical,"Lake, Reservoir, Impoundment",5809,36322,96683
+Radiochemical,Land,1783,7152,96683
+Radiochemical,Ocean,77,234,96683
+Radiochemical,Spring,4338,20184,96683
+Radiochemical,Stream,37411,295270,96683
+Radiochemical,Subsurface,473,2974,96683
+Radiochemical,Well,45193,315680,96683
+Radiochemical,Wetland,103,470,96683
+Sediment,Aggregate surface-water-use,233,668,32316
+Sediment,Aggregate groundwater use,3,82,32316
+Sediment,Atmosphere,10,95,32316
+Sediment,Estuary,294,6184,32316
+Sediment,Facility,325,36838,32316
+Sediment,Glacier,0,0,32316
+Sediment,"Lake, Reservoir, Impoundment",1605,27981,32316
+Sediment,Land,145,3045,32316
+Sediment,Ocean,89,402,32316
+Sediment,Spring,52,461,32316
+Sediment,Stream,29061,2978591,32316
+Sediment,Subsurface,32,1439,32316
+Sediment,Well,236,2256,32316
+Sediment,Wetland,52,1033,32316
+Stable Isotopes,Aggregate surface-water-use,0,0,35663
+Stable Isotopes,Aggregate groundwater use,0,0,35663
+Stable Isotopes,Atmosphere,209,2778,35663
+Stable Isotopes,Estuary,1887,44732,35663
+Stable Isotopes,Facility,114,722,35663
+Stable Isotopes,Glacier,7,167,35663
+Stable Isotopes,"Lake, Reservoir, Impoundment",2224,33976,35663
+Stable Isotopes,Land,177,2150,35663
+Stable Isotopes,Ocean,510,16574,35663
+Stable Isotopes,Spring,2353,9680,35663
+Stable Isotopes,Stream,6213,67201,35663
+Stable Isotopes,Subsurface,280,2941,35663
+Stable Isotopes,Well,21567,73984,35663
+Stable Isotopes,Wetland,79,651,35663
+Toxicity,Aggregate surface-water-use,1,3,3568
+Toxicity,Aggregate groundwater use,0,0,3568
+Toxicity,Atmosphere,0,0,3568
+Toxicity,Estuary,3397,3692,3568
+Toxicity,Facility,0,0,3568
+Toxicity,Glacier,0,0,3568
+Toxicity,"Lake, Reservoir, Impoundment",23,173,3568
+Toxicity,Land,0,0,3568
+Toxicity,Ocean,0,0,3568
+Toxicity,Spring,0,0,3568
+Toxicity,Stream,138,452,3568
+Toxicity,Subsurface,0,0,3568
+Toxicity,Well,5,41,3568
+Toxicity,Wetland,4,4,3568
