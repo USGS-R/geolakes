@@ -6,7 +6,8 @@ get_mutate_HUC8s <- function(config){
   file <- GET(query, write_disk(destination, overwrite=T), progress())
   shp.path <- tempdir()
   unzip(destination, exdir = shp.path)
-  hucs = readOGR(shp.path, layer='wbdhu8_alb_simp') %>% 
+  layer <- strsplit(config$feature,'[:]')[[1]][2]
+  hucs = readOGR(shp.path, layer=layer) %>% 
     spTransform(CRS(config$plot_CRS))
   unlink(destination)
   return(hucs)
@@ -40,21 +41,20 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
   point.in = gContains(hucs, sites, byid=TRUE)
   counts.by.id = colSums(point.in) %>% log
   
-  counts.by.id[!is.finite(counts.by.id)] <- 0
+  counts.by.id[!is.finite(counts.by.id)] <- NA
 
   ## -- color markers --
 
-  key.bins = log(axTicks(1, axp=c(1, max(exp(counts.by.id)), 3), usr=c(1,3), log=TRUE))
+  key.bins = c(NA, log(axTicks(1, axp=c(1, max(exp(counts.by.id)), 3), usr=c(1,3), log=TRUE)))
   bins = key.bins
-  pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins))
-  key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins))
+  pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins)-1)
+  key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins)-1)
 
-  pal[1] <- map.config$missing_data # 0 is grey
-  key.cols[1] <- map.config$missing_data  # 0 is grey
-  key.text <- exp(key.bins)
-  key.text[1] <- 0
+  pal <- c(map.config$missing_data, pal) # 0 is grey
+  key.cols <- c(map.config$missing_data, key.cols)  # 0 is grey
+  key.text <- c(0, tail(exp(key.bins), -1))
   #get closest bin
-  bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),NA,which.min(abs(x-bins)))))
+  bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),1,which.min(abs(x-bins)))))
   cols = rep(NA, length(counts.by.id))
   cols[!is.na(bin)] = pal[bin[!is.na(bin)]]
 
@@ -67,11 +67,11 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
   ylim <- c(-2072574.6,727758.7)
 
   plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
-
+  #plot(sites, add=TRUE, col='red',pch=20,cex=0.2)
 
   # secondary plot for color legend
   plot(c(NA,NA),c(NA,NA), axes=F, ylim=c(0,1),xlim=c(0,1))
-  bin.w = 0.04
+  bin.w = 0.05
   spc = .02
   text(.1,.5, 'Number of sites', pos=3, offset=0.1)
   for(i in 1:length(key.cols)){
@@ -80,4 +80,24 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
     text(x1+bin.w/2, y=0.33, labels=key.text[i], pos=1)
   }
   dev.off()
+}
+
+as.sites <- function(target_name){
+  
+  if (target_name == 'temperature_necsc'){
+    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/temperature_data_linked/all_temp.tsv', sep='\t', header=TRUE, stringsAsFactors = FALSE)
+    message('temperature'); 2+4
+  } else if (target_name == 'secchi_necsc'){
+    message('secchi')
+    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/secchi_data_linked/secchi_data_summary.csv', sep=',', header=TRUE, stringsAsFactors = FALSE)
+  } else if (target_name == 'depth_necsc'){
+    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/depth_data_linked/depth_data_summary.csv', sep=',', header=TRUE, stringsAsFactors = FALSE)
+  }
+  
+  site.names <- unique(lake.sites['id'])
+  
+  sites <- read.csv('~/Documents/R/necsc-lake-modeling/data/NHD_summ/nhd_centroids.csv', stringsAsFactors = FALSE)
+  dplyr::right_join(sites, site.names) %>% 
+    filter(is.finite(lat), is.finite(lon)) %>% 
+    select(lon, lat) %>% mutate_wqp_site(config = yaml::yaml.load_file('configs/mapping.yml'))
 }

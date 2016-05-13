@@ -14,6 +14,7 @@ sources:
 targets:
   all:
     depends: 
+
       - figures/phosphorus_lakes.png
       - figures/phosphorus_all.png
       - figures/nitrogen_lakes.png
@@ -26,6 +27,8 @@ targets:
       - figures/temperature_all.png
       - figures/doc_lakes.png
       - figures/doc_all.png
+      - figures/secchi_lakes.png
+      - figures/secchi_all.png
       
   map.config:
     command: yaml.load_file("configs/mapping.yml")
@@ -70,6 +73,12 @@ targets:
     command: get_wqp_data(target_name, wqp.config, map.config)
     
   doc_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  secchi_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  secchi_lakes:
     command: get_wqp_data(target_name, wqp.config, map.config)
   
   figures/phosphorus_lakes.png:
@@ -119,3 +128,12 @@ targets:
   figures/doc_all.png:
     command: plot_huc_sites(huc.map, doc_all, map.config, target_name)
     plot: true
+    
+  figures/secchi_lakes.png:
+    command: plot_huc_sites(huc.map, secchi_lakes, map.config, target_name)
+    plot: true
+    
+  figures/secchi_all.png:
+    command: plot_huc_sites(huc.map, secchi_all, map.config, target_name)
+    plot: true
+

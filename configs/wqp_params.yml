@@ -16,6 +16,8 @@ chlorophyll:
 doc:  
   characteristicName: ["Organic carbon", "Total Particulate Organic Carbon"]
 
+secchi:
+  characteristicName: ["Depth, Secchi disk depth", "Depth, Secchi disk depth (choice list)", "Secchi Reading Condition (choice list)", "Secchi depth", "Water transparency, Secchi disc"]
   
 lakes: 
   siteType: "Lake, Reservoir, Impoundment"
