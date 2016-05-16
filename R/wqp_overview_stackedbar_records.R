@@ -38,7 +38,8 @@ createRecordsBarchart <- function(records_data, type = "percent"){
                                      Radiochemical = "Radiochemical",
                                      Sediment = "Sediment",                    
                                      `Stable Isotopes` = "Stable Isotopes",
-                                     Toxicity = "Toxicity"))
+                                     Toxicity = "Toxicity",
+                                     Total = "Total"))
   
   totalNumRecords <- data_newcategories %>% 
     group_by(display_charType) %>% 
@@ -60,7 +61,8 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   
   data <- data %>% 
     mutate(display_siteType = factor(display_siteType, levels = site_order, ordered = TRUE)) %>% 
-    mutate(charTypeLabels = factor(charTypeLabels, levels = char_order, ordered = TRUE))
+    mutate(charTypeLabels = factor(charTypeLabels, levels = char_order, ordered = TRUE)) %>% 
+    arrange(display_siteType) #otherwise, the bars show up in the wrong order (but legend correctly)
   
   site_cols <- c('#1f78b4','#33a02c','#fb9a99',
                  '#6a3d9a','#80b1d3','#ff7f00')
@@ -68,12 +70,11 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   if(type == "percent"){
   
     # percent plot
-    
     records_plot <- ggplot(data, aes(x = charTypeLabels, 
                                      y = percentRecords, 
                                      fill = display_siteType)) + 
-      ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
-      ylab('Percent Site Type') + xlab('Characteristic Type') +
+      ggtitle('Distribution of WQP Records by Site Types and Characteristic Groups') +
+      ylab('Percent Site Type') + xlab('Characteristic Group') +
       geom_bar(stat="identity") + 
       coord_flip() + 
       theme_classic() + 
@@ -86,8 +87,8 @@ createRecordsBarchart <- function(records_data, type = "percent"){
     records_plot <- ggplot(data, aes(x = charTypeLabels, 
                                      y = numRecords_siteType, 
                                      fill = display_siteType)) + 
-      ggtitle('Distribution of WQP Records by Site Types and Characteristic Types') +
-      ylab('Number of Records') + xlab('Characteristic Type') +
+      ggtitle('Distribution of WQP Records by Site Types and Characteristic Groups') +
+      ylab('Number of Records') + xlab('Characteristic Group') +
       geom_bar(stat="identity") + 
       coord_flip() + 
       theme_classic() + 
@@ -97,10 +98,3 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   
   return(records_plot)
 }
-
-
-
-
-
-
-
