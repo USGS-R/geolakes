@@ -79,18 +79,19 @@ counts_all_list <- lapply(char_types, dates_df = dates_df, tmp = tmp,
                                                                                                           date_vec['end_date']))
                                                                                    })
                                                          counts_site_df <- do.call(rbind, counts_site_list)
-                                                         write.csv(counts_site_df, paste(tmp, "counts", "_", char_type, 
-                                                                                         "_", site_type, ".csv"))
+                                                         sitefile <- paste("counts", "_", char_type, "_", site_type, ".csv")
+                                                         write.csv(counts_site_df, file.path(tmp, sitefile), row.names = FALSE)
                                                          return(counts_site_df)
                                                        })
                             counts_char_df <- do.call(rbind, counts_char_list)
                             return(counts_char_df)
                           })
 
-
-files <- file.path(tmp, list.files(tmp, pattern = "counts"))
-counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
+if(is.null(counts_all_list)){
+  files <- file.path(tmp, list.files(tmp, pattern = "counts"))
+  counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
+}
 
 counts_all_df <- do.call(rbind, counts_all_list)
 
-# write.csv(counts_all_df, 'wqp_temporal_test.csv', row.names = FALSE)
+write.csv(counts_all_df, 'wqp_database_counts.csv', row.names = FALSE)
