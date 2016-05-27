@@ -73,16 +73,17 @@ counts_all_list <- lapply(char_types, dates_df = dates_df, tmp = tmp,
                                                        FUN = function(site_type, char_type, dates_df){
                                                          counts_site_list <- apply(dates_df, MARGIN = 1, char_type = char_type, site_type = site_type,
                                                                                    FUN = function(date_vec, char_type, site_type){
-                                                                                     print(paste(char_type, ":", site_type, ",", format(as.Date(date_vec[1]), "%Y")))
+                                                                                     print(paste0(char_type, ": ", site_type, ", ", format(as.Date(date_vec[1]), "%Y")))
                                                                                      return(createCountDF(char_type, site_type, 
                                                                                                           date_vec['start_date'], 
                                                                                                           date_vec['end_date']))
                                                                                    })
                                                          counts_site_df <- do.call(rbind, counts_site_list)
+                                                         write.csv(counts_site_df, paste(tmp, "counts", "_", char_type, 
+                                                                                         "_", site_type, ".csv"))
                                                          return(counts_site_df)
                                                        })
                             counts_char_df <- do.call(rbind, counts_char_list)
-                            write.csv(counts_char_df, paste(tmp, "counts", "_", char_type, ".csv"))
                             return(counts_char_df)
                           })
 
