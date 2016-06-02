@@ -108,5 +108,5 @@ if(length(files) == n_unique){
   files <- file.path('cache', list.files('cache', pattern = "counts"))
   counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
   counts_all_df <- do.call(rbind, counts_all_list)
-  write.csv(counts_all_df, 'wqp_database_counts.csv', row.names = FALSE)
+  write.csv(counts_all_df, 'inst/extdata/wqp_database_counts.csv', row.names = FALSE)
 }
