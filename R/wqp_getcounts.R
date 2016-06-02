@@ -1,6 +1,7 @@
 # getting counts of sites and records for each characteristic group, site type, and year
 
 library(dataRetrieval)
+library(dplyr)
 library(httr)
 
 char_types <- c('Physical', 'Inorganics, Major, Metals', 'Inorganics, Major, Non-metals', 
@@ -16,9 +17,11 @@ site_types <- c('Aggregate groundwater use', 'Aggregate surface-water-use', 'Atm
 start_dates <- seq(as.Date('1800-01-01'), 
                    as.Date(paste0(format(Sys.Date(), "%Y"), '-01-01')),
                    by = 'year')
-add_yr <- seq(tail(start_dates,1), length = 2, by = '1 year')[2]
-end_dates <- c(start_dates[-1], add_yr) -1 # end_dates are December 31st of following yr
-dates_df <- data.frame(start_date = start_dates, end_date = end_dates, stringsAsFactors = FALSE)
+
+query_combinations <- expand.grid(char_types = char_types, site_types = site_types, 
+                                  start_dates = start_dates, stringsAsFactors = FALSE) %>% 
+  mutate(end_dates = as.Date(format(start_dates, "%Y-12-31"))) %>% 
+  arrange(char_types, site_types)
 
 createCountDF <- function(char_type, site_type, start_date, end_date){
   #format dates for WQP call
@@ -48,6 +51,9 @@ retryWQP <- function(..., retries=3){
     result = tryCatch({
       readWQPdata(...)
     }, error = function(e) {
+      if(e$message == 'Operation was aborted by an application callback'){
+        stop(e)
+      }
       return(NULL)
     })
     return(result)
@@ -65,33 +71,42 @@ retryWQP <- function(..., retries=3){
   return(result)
 }
 
-tmp <- tempdir()
+if(!dir.exists('cache')){dir.create('cache')}
 
-counts_all_list <- lapply(char_types, dates_df = dates_df, tmp = tmp,
-                          FUN = function(char_type, dates_df, tmp){
-                            counts_char_list <- lapply(site_types, char_type = char_type, dates_df = dates_df,
-                                                       FUN = function(site_type, char_type, dates_df){
-                                                         counts_site_list <- apply(dates_df, MARGIN = 1, char_type = char_type, site_type = site_type,
-                                                                                   FUN = function(date_vec, char_type, site_type){
-                                                                                     print(paste0(char_type, ": ", site_type, ", ", format(as.Date(date_vec[1]), "%Y")))
-                                                                                     return(createCountDF(char_type, site_type, 
-                                                                                                          date_vec['start_date'], 
-                                                                                                          date_vec['end_date']))
-                                                                                   })
-                                                         counts_site_df <- do.call(rbind, counts_site_list)
-                                                         sitefile <- paste("counts", "_", char_type, "_", site_type, ".csv")
-                                                         write.csv(counts_site_df, file.path(tmp, sitefile), row.names = FALSE)
-                                                         return(counts_site_df)
-                                                       })
-                            counts_char_df <- do.call(rbind, counts_char_list)
-                            return(counts_char_df)
-                          })
-
-if(is.null(counts_all_list)){
-  files <- file.path(tmp, list.files(tmp, pattern = "counts"))
-  counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
+for(i in 1:nrow(query_combinations)){
+  char_type <- query_combinations$char_types[i]
+  site_type <- query_combinations$site_types[i]
+  start_date <- query_combinations$start_dates[i]
+  end_date <- query_combinations$end_dates[i]
+  sitefile <- paste0("counts", "_", char_type, "_", site_type, ".csv")
+  sitefilepath <- file.path('cache', sitefile)
+  
+  new_site <- i == 1 || site_type != query_combinations$site_types[i-1]
+  if(new_site){
+    counts_df <- data.frame()
+  }
+  
+  if(file.exists(sitefilepath)){
+    next
+  } 
+  
+  counts_df_i <- createCountDF(char_type, site_type, start_date, end_date)
+  counts_df <- rbind(counts_df, counts_df_i)
+  
+  lastOfSiteType <- site_type != query_combinations$site_types[i+1] || i == nrow(query_combinations)
+  if(lastOfSiteType){
+    write.csv(counts_df, sitefilepath, row.names = FALSE)
+  }
+  
 }
 
-counts_all_df <- do.call(rbind, counts_all_list)
+n_unique <- query_combinations %>% 
+  select(char_types, site_types) %>% 
+  unique() %>% nrow()
 
-write.csv(counts_all_df, 'wqp_database_counts.csv', row.names = FALSE)
+if(length(files) == n_unique){
+  files <- file.path('cache', list.files('cache', pattern = "counts"))
+  counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
+  counts_all_df <- do.call(rbind, counts_all_list)
+  write.csv(counts_all_df, 'wqp_database_counts.csv', row.names = FALSE)
+}
