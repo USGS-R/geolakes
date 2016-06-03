@@ -6,57 +6,25 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   
   data_newcategories <- records_data %>% 
     rowwise() %>% 
-    mutate(display_siteType = switch(siteType,
-                                     `Aggregate groundwater use` = "Groundwater",
-                                     `Aggregate surface-water-use` = "Other", 
-                                     Atmosphere = "Other",                 
-                                     Estuary = "Marine",
-                                     Facility = "Facility",                  
-                                     Glacier = "Other",                     
-                                     `Lake, Reservoir, Impoundment` = "Lake",
-                                     Land = "Other",                     
-                                     Ocean = "Marine",                      
-                                     Spring = "Groundwater",                     
-                                     Stream = "Stream",                   
-                                     Subsurface = "Groundwater",                 
-                                     Well = "Groundwater",                       
-                                     Wetland = "Other")) %>% 
-    mutate(display_charType = switch(characteristicType,
-                                     Biological = "Biological",
-                                     Information = "Information",
-                                     `Inorganics, Major, Metals` = "Inorganics",    
-                                     `Inorganics, Major, Non-metals` = "Inorganics", 
-                                     `Inorganics, Minor, Metals` = "Inorganics",
-                                     `Inorganics, Minor, Non-metals` = "Inorganics",
-                                     Microbiological = "Microbiological",
-                                     Nutrient = "Nutrient",
-                                     `Organics, Other` = "Organics",              
-                                     `Organics, PCBs` = "Organics",
-                                     `Organics, Pesticide` = "Organics",
-                                     Physical = "Physical",                     
-                                     `Population/Community` = "Population/Community",
-                                     Radiochemical = "Radiochemical",
-                                     Sediment = "Sediment",                    
-                                     `Stable Isotopes` = "Stable Isotopes",
-                                     Toxicity = "Toxicity",
-                                     Total = "Total"))
+    mutate(display_siteType = displaySites(siteType)) %>% 
+    mutate(display_charType = displayChars(characteristicType))
   
-  totalNumRecords <- data_newcategories %>% 
+  totalnumResults <- data_newcategories %>% 
     group_by(display_charType) %>% 
-    summarize(totalNumRecords = sum(numRecords))
+    summarize(totalnumResults = sum(numResults))
   
-  numRecords_siteType <- data_newcategories %>% 
+  numResults_siteType <- data_newcategories %>% 
     group_by(display_charType, display_siteType) %>% 
-    summarize(numRecords_siteType = sum(numRecords))
+    summarize(numResults_siteType = sum(numResults))
   
-  data <- numRecords_siteType %>% 
-    left_join(totalNumRecords, by='display_charType') %>% 
-    mutate(percentRecords = (numRecords_siteType/totalNumRecords)*100) %>% 
-    mutate(charTypeLabels = paste0(display_charType, "\n (", totalNumRecords, ")")) %>% 
+  data <- numResults_siteType %>% 
+    left_join(totalnumResults, by='display_charType') %>% 
+    mutate(percentRecords = (numResults_siteType/totalnumResults)*100) %>% 
+    mutate(charTypeLabels = paste0(display_charType, "\n (", totalnumResults, ")")) %>% 
     ungroup()
   
   site_order <- c('Facility', 'Groundwater', 'Lake', 'Marine', 'Stream', 'Other')
-  data_order <- arrange(data, totalNumRecords)
+  data_order <- arrange(data, totalnumResults)
   char_order <- unique(data_order$charTypeLabels)
   
   data <- data %>% 
@@ -85,7 +53,7 @@ createRecordsBarchart <- function(records_data, type = "percent"){
   # absolute number of records plot
   
     records_plot <- ggplot(data, aes(x = charTypeLabels, 
-                                     y = numRecords_siteType, 
+                                     y = numResults_siteType, 
                                      fill = display_siteType)) + 
       ggtitle('Distribution of WQP Records by Site Types and Characteristic Groups') +
       ylab('Number of Records') + xlab('Characteristic Group') +
