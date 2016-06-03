@@ -50,7 +50,7 @@ createCountDF <- function(char_type, site_type, start_date, end_date){
 }
 
 getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")), 
-                                allCountsFile = 'inst/extdata/wqp_database_counts.csv'){
+                                allCountsFile = 'data/wqp_database_counts.csv'){
   
   library(dataRetrieval)
   library(dplyr)
@@ -122,6 +122,8 @@ getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.ti
   if(length(files) == n_unique){
     counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
     counts_all_df <- do.call(rbind, counts_all_list)
+    
+    if(!dir.exists('data')){dir.create('data')}
     write.csv(counts_all_df, allCountsFile, row.names = FALSE)
   }
   
