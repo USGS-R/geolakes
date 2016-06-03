@@ -50,13 +50,14 @@ createCountDF <- function(char_type, site_type, start_date, end_date){
 }
 
 getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")), 
-                                allCountsFile = 'data/wqp_database_counts.csv'){
+                                allCountsFile = 'data/wqp_database_counts.csv',
+                                forceRun = FALSE){
   
   library(dataRetrieval)
   library(dplyr)
   library(httr)
 
-  if(file.exists(allCountsFile)){
+  if(file.exists(allCountsFile) && !forceRun){
     return()
   }
   
@@ -99,7 +100,7 @@ getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.ti
       counts_df <- data.frame()
     }
     
-    if(file.exists(sitefilepath)){
+    if(file.exists(sitefilepath) && !forceRun){
       next
     } 
     
