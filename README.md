@@ -1,6 +1,25 @@
 # geolakes
 Collection of scripts used for figures or calculations in the geolakes publication. 
 
+
+### Creating summary figure of data available in WQP
+
+First, you need to pull down the number of records by site type and characteristic type over time from the Water Quality Portal using functions from `R/wqp_retrieval_functions.R`:
+
+```{r}
+getAllRecordsCounts()
+```
+
+These queries take time to run and cache individual files (each site type, characteristic type combination is one file). Once all files are cached, the function will create a single CSV file stored in `data/`. If the function is aborted, you can just rerun `getAllRecordsCounts()` and it will skip the queries that already have stored files in `cache/`. 
+
+Once the `data/wqp_database_counts.csv` file exists, you can use the plotting functions from `R/wqp_plotting_functions.R`:
+
+```{r}
+plotSparklinesBarchart()
+```
+
+This function will create the the barchart with sparklines figure and save it as a PNG in `figures/`. 
+
 </br>
 
 Disclaimer
