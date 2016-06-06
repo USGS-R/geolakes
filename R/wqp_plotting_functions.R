@@ -121,12 +121,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   library(gtable)
   library(grid)
   
-  ############ TAKE THIS OUT ##########
-  startYr <- 2000
-  endYr <- 2016
-  #####################################
-  
-  temporal_data <- read.csv('inst/extdata/wqp_database_counts.csv', stringsAsFactors = FALSE)
+  temporal_data <- read.csv('data/wqp_database_counts.csv', stringsAsFactors = FALSE)
     
   total_bar <- temporal_data %>% 
     group_by(siteType) %>% 
@@ -138,6 +133,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   
   results_data <- temporal_data %>% 
     select(-startDate, -endDate) %>% 
+    filter(characteristicType != "Not Assigned") %>% 
     rbind(total_bar)
   
   # group characteristic types
@@ -191,8 +187,9 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
     theme_bw() + 
     theme(axis.line = element_blank(), 
           axis.ticks.x = element_blank(),
-          axis.text.x = element_text(margin = margin(b = -1, unit = 'line'),
-                                     face = 'italic', size = 8, hjust = 0),
+          axis.text.x = element_text(margin = margin(b = -1, unit = 'line'), 
+                                     face = 'italic', size = 8, hjust = 0, 
+                                     vjust = 0, angle = 45),
           axis.title.x = element_blank(),
           axis.ticks.y = element_blank(),
           axis.text.y = element_blank(),
@@ -202,21 +199,21 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
           panel.border = element_blank(), 
           strip.background = element_blank(),
           strip.text = element_blank(),
-          plot.margin=unit(c(0.6,1.4,0.6,0.2),"lines")) #top, right, bottom, left
+          plot.margin=unit(c(0.6,1.4,0.9,0.2),"lines")) #top, right, bottom, left
    
   # put the bar chart and spark lines together
   g <- ggplotGrob(records_plot)
   g <- gtable_add_cols(g, unit(5,"cm"))
   g <- gtable_add_grob(g, ggplotGrob(sparklines),
-                       t = 2, l=ncol(g), b=4, r=ncol(g))
+                       t=1, l=ncol(g), b=5, r=ncol(g))
   g <- gtable_add_rows(g, unit(1.5,"cm"))
   g <- gtable_add_grob(g, records_plot_legend,
                        t=7, l=4, b=7, r=4)
   
   grid.newpage()
-  png('figures/records_w_sparklines.png')
+  png('figures/records_w_sparklines.png', width = 600)
   grid.draw(g)
-
+  dev.off()
 }
 
 
