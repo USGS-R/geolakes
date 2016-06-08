@@ -18,7 +18,10 @@ doc:
 
 secchi:
   characteristicName: ["Depth, Secchi disk depth", "Depth, Secchi disk depth (choice list)", "Secchi Reading Condition (choice list)", "Secchi depth", "Water transparency, Secchi disc"]
-  
+
+glyphosate:
+  characteristicName: ["Glyphosate","AMPA (glyphosate metabolite)"]
+
 lakes: 
   siteType: "Lake, Reservoir, Impoundment"
   

@@ -29,6 +29,7 @@ targets:
       - figures/doc_all.png
       - figures/secchi_lakes.png
       - figures/secchi_all.png
+      - figures/glyphosate_all.png
       
   map.config:
     command: yaml.load_file("configs/mapping.yml")
@@ -79,6 +80,9 @@ targets:
     command: get_wqp_data(target_name, wqp.config, map.config)
     
   secchi_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  glyphosate_all:
     command: get_wqp_data(target_name, wqp.config, map.config)
   
   figures/phosphorus_lakes.png:
@@ -135,5 +139,9 @@ targets:
     
   figures/secchi_all.png:
     command: plot_huc_sites(huc.map, secchi_all, map.config, target_name)
+    plot: true
+    
+  figures/glyphosate_all.png:
+    command: plot_huc_sites(huc.map, glyphosate_all, map.config, target_name)
     plot: true
 
