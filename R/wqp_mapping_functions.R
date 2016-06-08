@@ -82,22 +82,3 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
   dev.off()
 }
 
-as.sites <- function(target_name){
-  
-  if (target_name == 'temperature_necsc'){
-    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/temperature_data_linked/all_temp.tsv', sep='\t', header=TRUE, stringsAsFactors = FALSE)
-    message('temperature'); 2+4
-  } else if (target_name == 'secchi_necsc'){
-    message('secchi')
-    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/secchi_data_linked/secchi_data_summary.csv', sep=',', header=TRUE, stringsAsFactors = FALSE)
-  } else if (target_name == 'depth_necsc'){
-    lake.sites= read.table('~/Documents/R/necsc-lake-modeling/data/depth_data_linked/depth_data_summary.csv', sep=',', header=TRUE, stringsAsFactors = FALSE)
-  }
-  
-  site.names <- unique(lake.sites['id'])
-  
-  sites <- read.csv('~/Documents/R/necsc-lake-modeling/data/NHD_summ/nhd_centroids.csv', stringsAsFactors = FALSE)
-  dplyr::right_join(sites, site.names) %>% 
-    filter(is.finite(lat), is.finite(lon)) %>% 
-    select(lon, lat) %>% mutate_wqp_site(config = yaml::yaml.load_file('configs/mapping.yml'))
-}
