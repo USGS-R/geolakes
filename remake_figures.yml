@@ -155,9 +155,10 @@ targets:
     plot: true
     
   figures/secchi_seasons_regionally.png:
-    command: FIGURE_all_us_secchi(scratch/all_secchi_usa.RData)
+    command: FIGURE_all_us_secchi(datasets/all_secchi_usa.RData)
     plot: true
   
-  scratch/all_secchi_usa.RData:
-    command: get_all_us_secchi(target_name)
+  #long-running job, commit data
+  #datasets/all_secchi_usa.RData:
+  #  command: get_all_us_secchi(target_name)
 
