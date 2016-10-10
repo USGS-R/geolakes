@@ -16,8 +16,9 @@ regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington'
                        'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland', 
                        'Delaware', 'Alabama', 'Mississippi'), group='south', stringsAsFactors = FALSE))
 
-#EDF8B1 , #7FCDBB , #2c7fb8 , #283044
-cols <- c(midwest = '#8dd3c7', west = '#fb8072', northeast='#bebada', south = '#ffffb3')
+
+cols <- c(west = '#283044', south = '#F7CB65',northeast='#2c7fb8', midwest = '#7FCDBB')
+missing.data = "grey85"
 
 data.out <- readRDS('all_secchi_usa.rds')
 state.mapping <- dataRetrieval::stateCd %>% 
@@ -40,9 +41,6 @@ d <- d %>%
 
 plot.CRS <- "+init=epsg:2163"
 
-missing.data = "grey90"
-site.color = "grey40"#rgb(1,0,0,0.3)
-
 ## -- get spatial data --
 shp.path = '/Users/jread/Documents/R/OWDI-Lower-Colorado-Drought-Vis/src_data/states_21basic'
 states = readOGR(shp.path, layer='states') %>% 
@@ -51,7 +49,7 @@ states = readOGR(shp.path, layer='states') %>%
 states <- states[!states$STATE_NAME %in% c('Alaska', 'Hawaii'), ]
 
 fig.height <- 2.25
-png(filename = 'secchi_fig.png', width = 3.1, height=fig.height, res=300, units = 'in')
+png(filename = 'secchi_fig.png', width = 3.1, height=fig.height, res=600, units = 'in')
 
 par(mar=c(0,0,0.2,0.2), omi=c(0.25,0.35,0,0), mgp=c(1.8,0.15,0), las=1)
 
@@ -81,8 +79,7 @@ for (group.p in names(cols)){
   # missing states:
   plot.cols <- rep(NA, length(states$STATE_NAME))
   use.i <- states$STATE_NAME %in% (regions %>% filter(group==group.p) %>% .$STATE_NAME) & !states$STATE_NAME %in% use.states
-  rgb.col <- col2rgb(cols[[group.p]])
-  plot.cols[use.i] <- rgb(rgb.col[1,1],rgb.col[2,1],rgb.col[3,1],90, maxColorValue = 255) # opacity 
+  plot.cols[use.i] <- missing.data
   plot(states, col=plot.cols, border='white', lwd=0.3, axes=FALSE, xlab="", ylab="", bg=NA, add=TRUE)
 }
 par(old.par)
