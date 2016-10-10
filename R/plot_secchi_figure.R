@@ -49,7 +49,7 @@ states = readOGR(shp.path, layer='states') %>%
 states <- states[!states$STATE_NAME %in% c('Alaska', 'Hawaii'), ]
 
 fig.height <- 2.25
-png(filename = 'secchi_fig.png', width = 3.1, height=fig.height, res=600, units = 'in')
+png(filename = 'figures/secchi_fig.png', width = 3.1, height=fig.height, res=600, units = 'in')
 
 par(mar=c(0,0,0.2,0.2), omi=c(0.25,0.35,0,0), mgp=c(1.8,0.15,0), las=1)
 
