@@ -23,16 +23,8 @@ sources:
 targets:
   all:
     depends: 
-
-      - figures/arsenic_lakes.png
-      - figures/arsenic_all.png
-      - figures/temperature_lakes.png
-      - figures/temperature_all.png
-      - figures/doc_lakes.png
-      - figures/doc_all.png
-      - figures/secchi_lakes.png
-      - figures/secchi_all.png
-      - figures/secchi_seasons_regionally.png
+      - figures/test.png
+      - figures/multi_panel_constituents.png
       
   map.config:
     command: yaml.load_file("configs/mapping.yml")
@@ -88,64 +80,12 @@ targets:
   glyphosate_all:
     command: get_wqp_data(target_name, wqp.config, map.config)
   
-  figures/phosphorus_lakes.png:
-    command: plot_huc_sites(huc.map, phosphorus_lakes, map.config, target_name)
-    plot: true
-    
-  figures/phosphorus_all.png:
-    command: plot_huc_sites(huc.map, phosphorus_all, map.config, target_name)
-    plot: true
-    
-  figures/nitrogen_lakes.png:
-    command: plot_huc_sites(huc.map, nitrogen_lakes, map.config, target_name)
-    plot: true
-    
-  figures/nitrogen_all.png:
-    command: plot_huc_sites(huc.map, nitrogen_all, map.config, target_name)
-    plot: true
-    
-  figures/arsenic_lakes.png:
-    command: plot_huc_sites(huc.map, arsenic_lakes, map.config, target_name)
-    plot: true
-    
-  figures/arsenic_all.png:
-    command: plot_huc_sites(huc.map, arsenic_all, map.config, target_name)
-    plot: true
-    
-  figures/chlorophyll_lakes.png:
-    command: plot_huc_sites(huc.map, chlorophyll_lakes, map.config, target_name)
-    plot: true
-    
-  figures/chlorophyll_all.png:
-    command: plot_huc_sites(huc.map, chlorophyll_all, map.config, target_name)
-    plot: true
-    
-  figures/temperature_lakes.png:
-    command: plot_huc_sites(huc.map, temperature_lakes, map.config, target_name)
-    plot: true
-    
-  figures/temperature_all.png:
-    command: plot_huc_sites(huc.map, temperature_all, map.config, target_name)
-    plot: true
-    
-  figures/doc_lakes.png:
-    command: plot_huc_sites(huc.map, doc_lakes, map.config, target_name)
-    plot: true
-    
-  figures/doc_all.png:
-    command: plot_huc_sites(huc.map, doc_all, map.config, target_name)
-    plot: true
-    
-  figures/secchi_lakes.png:
-    command: plot_huc_sites(huc.map, secchi_lakes, map.config, target_name)
-    plot: true
-    
-  figures/secchi_all.png:
+  figures/test.png:
     command: plot_huc_sites(huc.map, secchi_all, map.config, target_name)
     plot: true
     
-  figures/glyphosate_all.png:
-    command: plot_huc_sites(huc.map, glyphosate_all, map.config, target_name)
+  figures/multi_panel_constituents.png:
+    command: plot_huc_panel(huc.map, map.config, target_name, secchi_lakes, temperature_lakes, arsenic_lakes, arsenic_all)
     plot: true
     
   figures/secchi_seasons_regionally.png:
