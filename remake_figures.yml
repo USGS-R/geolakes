@@ -18,26 +18,20 @@ sources:
   - R/wqp_mapping_functions.R
   - R/readWQPdataPaged.R
   - R/get_all_us_secchi.R
+  - R/FIGURE_all_us_secchi.R 
 
 targets:
   all:
     depends: 
 
-      - figures/phosphorus_lakes.png
-      - figures/phosphorus_all.png
-      - figures/nitrogen_lakes.png
-      - figures/nitrogen_all.png
       - figures/arsenic_lakes.png
       - figures/arsenic_all.png
-      - figures/chlorophyll_lakes.png
-      - figures/chlorophyll_all.png
       - figures/temperature_lakes.png
       - figures/temperature_all.png
       - figures/doc_lakes.png
       - figures/doc_all.png
       - figures/secchi_lakes.png
       - figures/secchi_all.png
-      - figures/glyphosate_all.png
       - figures/secchi_seasons_regionally.png
       
   map.config:
@@ -155,7 +149,7 @@ targets:
     plot: true
     
   figures/secchi_seasons_regionally.png:
-    command: FIGURE_all_us_secchi(datasets/all_secchi_usa.RData)
+    command: FIGURE_all_us_secchi('datasets/all_secchi_usa.RData')
     plot: true
   
   #long-running job, commit data
