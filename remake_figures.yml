@@ -85,7 +85,7 @@ targets:
     plot: true
     
   figures/multi_panel_constituents.png:
-    command: plot_huc_panel(huc.map, map.config, target_name, secchi_lakes, temperature_lakes, arsenic_lakes, arsenic_all)
+    command: plot_huc_panel(huc.map, map.config, target_name, arsenic_lakes, arsenic_all, nitrogen_lakes, nitrogen_all, phosphorus_lakes, phosphorus_all, secchi_lakes, secchi_all, temperature_lakes, temperature_all)
     plot: true
     
   figures/secchi_seasons_regionally.png:
