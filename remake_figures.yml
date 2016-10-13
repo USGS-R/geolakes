@@ -18,6 +18,7 @@ sources:
   - R/wqp_mapping_functions.R
   - R/readWQPdataPaged.R
   - R/get_all_us_secchi.R
+  - R/FIGURE_all_us_secchi.R
 
 targets:
   all:
@@ -155,8 +156,7 @@ targets:
     plot: true
     
   figures/secchi_seasons_regionally.png:
-    command: FIGURE_all_us_secchi(datasets/all_secchi_usa.RData)
-    plot: true
+    command: FIGURE_all_us_secchi("datasets/all_secchi_usa.RData")
   
   #long-running job, commit data
   #datasets/all_secchi_usa.RData:
