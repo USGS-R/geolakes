@@ -113,15 +113,19 @@ createRecordsBarchart <- function(results_data, type = "percent"){
   return(records_plot)
 }
 
-# spark lines added to barchart
-plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y"))){
+# spark lines + barchart
+plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")),
+                                   allCountsFile = 'data/wqp_database_counts.csv'){
   
   library(dplyr)
   library(ggplot2)
   library(gtable)
   library(grid)
   
-  temporal_data <- read.csv('data/wqp_database_counts.csv', stringsAsFactors = FALSE)
+  temporal_data <- read.csv(allCountsFile, stringsAsFactors = FALSE)
+  # replace NA values w/ 0
+  temporal_data$numSites[is.na(temporal_data$numSites)] <- 0
+  temporal_data$numResults[is.na(temporal_data$numResults)] <- 0
     
   total_bar <- temporal_data %>% 
     group_by(siteType) %>% 
