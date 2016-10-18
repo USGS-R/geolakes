@@ -6,14 +6,24 @@ packages:
   - yaml
   - RColorBrewer
   - dataRetrieval
+  - TeachingDemos
+  - lubridate
+  - maptools
+  - rgeos
+  - maps
+  - sp
   
 ## All R files that are used must be listed here:
 sources:
   - R/wqp_mapping_functions.R
+  - R/readWQPdataPaged.R
+  - R/get_all_us_secchi.R
+  - R/FIGURE_all_us_secchi.R
 
 targets:
   all:
     depends: 
+
       - figures/phosphorus_lakes.png
       - figures/phosphorus_all.png
       - figures/nitrogen_lakes.png
@@ -24,6 +34,12 @@ targets:
       - figures/chlorophyll_all.png
       - figures/temperature_lakes.png
       - figures/temperature_all.png
+      - figures/doc_lakes.png
+      - figures/doc_all.png
+      - figures/secchi_lakes.png
+      - figures/secchi_all.png
+      - figures/glyphosate_all.png
+      - figures/secchi_seasons_regionally.png
       
   map.config:
     command: yaml.load_file("configs/mapping.yml")
@@ -62,6 +78,21 @@ targets:
     command: get_wqp_data(target_name, wqp.config, map.config)
     
   temperature_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+  
+  doc_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  doc_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  secchi_all:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  secchi_lakes:
+    command: get_wqp_data(target_name, wqp.config, map.config)
+    
+  glyphosate_all:
     command: get_wqp_data(target_name, wqp.config, map.config)
   
   figures/phosphorus_lakes.png:
@@ -103,3 +134,31 @@ targets:
   figures/temperature_all.png:
     command: plot_huc_sites(huc.map, temperature_all, map.config, target_name)
     plot: true
+    
+  figures/doc_lakes.png:
+    command: plot_huc_sites(huc.map, doc_lakes, map.config, target_name)
+    plot: true
+    
+  figures/doc_all.png:
+    command: plot_huc_sites(huc.map, doc_all, map.config, target_name)
+    plot: true
+    
+  figures/secchi_lakes.png:
+    command: plot_huc_sites(huc.map, secchi_lakes, map.config, target_name)
+    plot: true
+    
+  figures/secchi_all.png:
+    command: plot_huc_sites(huc.map, secchi_all, map.config, target_name)
+    plot: true
+    
+  figures/glyphosate_all.png:
+    command: plot_huc_sites(huc.map, glyphosate_all, map.config, target_name)
+    plot: true
+    
+  figures/secchi_seasons_regionally.png:
+    command: FIGURE_all_us_secchi("datasets/all_secchi_usa.RData")
+  
+  #long-running job, commit data
+  #datasets/all_secchi_usa.RData:
+  #  command: get_all_us_secchi(target_name)
+
