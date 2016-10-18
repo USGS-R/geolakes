@@ -85,7 +85,7 @@ plot_huc <- function(hucs, sites, map.config){
   
   plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
 }
-
+#' @importFrom 
 plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   sites <- list(...) #verify even number
   # loop
