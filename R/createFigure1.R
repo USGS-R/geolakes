@@ -54,6 +54,14 @@ createCountDF <- function(char_type, site_type, start_date, end_date){
 
 # counts of sites and records for each characteristic group, site type, and year in the range specified
 getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")), 
+                                charTypes = c('Physical', 'Inorganics, Major, Metals', 'Inorganics, Major, Non-metals', 
+                                              'Inorganics, Minor, Metals', 'Inorganics, Minor, Non-metals', 'Not Assigned',
+                                              'Nutrient', 'Organics, Other', 'Organics, PCBs', 'Organics, Pesticide', 
+                                              'Microbiological', 'Biological', 'Information', 'Sediment', 'Radiochemical', 
+                                              'Stable Isotopes', 'Population/Community', 'Toxicity'), 
+                                siteTypes = c('Aggregate groundwater use', 'Aggregate surface-water-use', 'Atmosphere', 'Estuary', 
+                                              'Facility', 'Glacier', 'Lake, Reservoir, Impoundment', 'Land', 'Not Assigned', 
+                                              'Ocean', 'Spring', 'Stream', 'Subsurface', 'Well', 'Wetland'),
                                 allCountsFile = 'data/wqp_database_counts.csv',
                                 forceRun = FALSE){
 
@@ -61,15 +69,8 @@ getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.ti
     return()
   }
   
-  char_types <- c('Physical', 'Inorganics, Major, Metals', 'Inorganics, Major, Non-metals', 
-                  'Inorganics, Minor, Metals', 'Inorganics, Minor, Non-metals', 'Not Assigned',
-                  'Nutrient', 'Organics, Other', 'Organics, PCBs', 'Organics, Pesticide', 
-                  'Microbiological', 'Biological', 'Information', 'Sediment', 'Radiochemical', 
-                  'Stable Isotopes', 'Population/Community', 'Toxicity')
-  
-  site_types <- c('Aggregate groundwater use', 'Aggregate surface-water-use', 'Atmosphere', 'Estuary', 
-                  'Facility', 'Glacier', 'Lake, Reservoir, Impoundment', 'Land', 'Not Assigned', 
-                  'Ocean', 'Spring', 'Stream', 'Subsurface', 'Well', 'Wetland')
+  char_types <- charTypes
+  site_types <- siteTypes
   
   start_dates <- seq(as.Date(paste0(startYr, '-01-01')), 
                      as.Date(paste0(endYr, '-01-01')),
@@ -354,18 +355,19 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
 
 # 1. Create a csv file of the WQP counts. 
 
-  # This example is only querying data for the last 10 years, and will take about 2 hours. If you keep 
-  # the default (1950), it will take a little over 10 hours. You will see each completed query printed to
-  # the console to help you follow the WQP query process. These queries cache individual files (each site
-  # type, characteristic type combination is one file). Once all files are cached, the function will create 
-  # a single CSV file stored in data/. If the function is aborted, you can just rerun getAllRecordsCounts() 
-  # and it will skip the queries that already have stored files in cache/.
+  # This example is querying data for the last 10 years for Nutrient &  Toxicity characteristic types only, 
+  # and will take about 12 minutes. If you keep the defaults (1950, and all characteristic types), it 
+  # will take a little over 10 hours. You will see each completed query printed to the console to help 
+  # you follow the WQP query process. These queries cache individual files (each site type, characteristic 
+  # type combination is one file). Once all files are cached, the function will create a single CSV file 
+  # stored in data/. If the function is aborted, you can just rerun getAllRecordsCounts() and it will skip 
+  # the queries that already have stored files in cache/.
 
 library(dataRetrieval)
 library(dplyr)
 library(httr)
 
-getAllRecordsCounts(startYr = 2006)
+getAllRecordsCounts(startYr = 2006, charTypes = c('Nutrient', 'Toxicity'))
 
 # 2. Create the bar chart and sparklines figure.
 
