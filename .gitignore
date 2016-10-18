@@ -7,3 +7,4 @@ data/
 cache/
 README.html
 .remake/
+datasets/all_secchi_usa.RData
