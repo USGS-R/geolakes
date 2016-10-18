@@ -122,6 +122,8 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   library(gtable)
   library(grid)
   
+  if(!dir.exists('figures')){dir.create('figures')}
+  
   temporal_data <- read.csv(allCountsFile, stringsAsFactors = FALSE)
   # replace NA values w/ 0
   temporal_data$numSites[is.na(temporal_data$numSites)] <- 0
