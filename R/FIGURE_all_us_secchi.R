@@ -82,7 +82,7 @@ FIGURE_all_us_secchi = function(infile){
   
   
   ## Save figure for manuscript
-  
+  #dev.off()
   png('figures/secchi_seasons_regionally.png', res=300, width=1800, height=1800)
   for(i in 1:length(regions)){
     statesites = subset(metadata, statename %in% regions[[i]])
