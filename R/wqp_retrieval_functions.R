@@ -33,8 +33,8 @@ createCountDF <- function(char_type, site_type, start_date, end_date){
   end_date <- format(end_date, format = '%Y-%m-%d')
   
   d <- retryWQP(characteristicType=char_type, siteType = site_type,
-                startDate = start_date, endDate = end_date, querySummary = TRUE,
-                retries = 5)
+                startDate = start_date, endDate = end_date,
+                querySummary = TRUE, retries = 5)
   
   if(is.null(d$`total-site-count`)){ d$`total-site-count` <- NA }
   if(is.null(d$`total-result-count`)){ d$`total-result-count` <- NA }
@@ -89,10 +89,11 @@ getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.ti
     end_date <- query_combinations$end_dates[i]
     
     if(char_type != "Population/Community"){
-      sitefile <- paste0("counts", "_", char_type, "_", site_type, ".csv")
+      sitefile <- paste("counts", char_type, site_type, sep = "_")
     } else {
-      sitefile <- paste0("counts", "_", "Population-Community", "_", site_type, ".csv")
+      sitefile <- paste("counts", "Population-Community", site_type, sep = "_")
     }
+    sitefile <- paste0(sitefile, '.csv')
     sitefilepath <- file.path('cache', sitefile)
     
     new_site <- i == 1 || site_type != query_combinations$site_types[i-1]
