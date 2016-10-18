@@ -1,3 +1,136 @@
+### functions for retrieving WQP counts and creating the bar chart + sparklines ###
+
+# To run everything, select all lines of code and click "Run" OR source this file.
+
+# allow some of the queries to fail to account for possible network hiccups
+retryWQP <- function(..., retries=3){
+  
+  safeWQP = function(...){
+    result = tryCatch({
+      readWQPdata(...)
+    }, error = function(e) {
+      if(e$message == 'Operation was aborted by an application callback'){
+        stop(e)
+      }
+      return(NULL)
+    })
+    return(result)
+  }
+  retry = 1
+  while (retry < retries){
+    result = safeWQP(...)
+    if (!is.null(result)){
+      retry = retries
+    } else {
+      message('query failed, retrying')
+      retry = retry+1
+    }
+  }
+  return(result)
+}
+
+# setup the dataRetrieval function call + format the data it returns
+createCountDF <- function(char_type, site_type, start_date, end_date){
+  #format dates for WQP call
+  start_date <- format(start_date, format = '%Y-%m-%d')
+  end_date <- format(end_date, format = '%Y-%m-%d')
+  
+  d <- retryWQP(characteristicType=char_type, siteType = site_type,
+                startDate = start_date, endDate = end_date,
+                querySummary = TRUE, retries = 5)
+  
+  if(is.null(d$`total-site-count`)){ d$`total-site-count` <- NA }
+  if(is.null(d$`total-result-count`)){ d$`total-result-count` <- NA }
+  
+  df <- data.frame(characteristicType = char_type,
+                   siteType = site_type,
+                   startDate = start_date, 
+                   endDate = end_date,
+                   numSites = as.numeric(d$`total-site-count`),
+                   numResults = as.numeric(d$`total-result-count`),
+                   stringsAsFactors = FALSE)
+  return(df)
+}
+
+# counts of sites and records for each characteristic group, site type, and year in the range specified
+getAllRecordsCounts <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")), 
+                                charTypes = c('Physical', 'Inorganics, Major, Metals', 'Inorganics, Major, Non-metals', 
+                                              'Inorganics, Minor, Metals', 'Inorganics, Minor, Non-metals', 'Not Assigned',
+                                              'Nutrient', 'Organics, Other', 'Organics, PCBs', 'Organics, Pesticide', 
+                                              'Microbiological', 'Biological', 'Information', 'Sediment', 'Radiochemical', 
+                                              'Stable Isotopes', 'Population/Community', 'Toxicity'), 
+                                siteTypes = c('Aggregate groundwater use', 'Aggregate surface-water-use', 'Atmosphere', 'Estuary', 
+                                              'Facility', 'Glacier', 'Lake, Reservoir, Impoundment', 'Land', 'Not Assigned', 
+                                              'Ocean', 'Spring', 'Stream', 'Subsurface', 'Well', 'Wetland'),
+                                allCountsFile = 'data/wqp_database_counts.csv',
+                                forceRun = FALSE){
+
+  if(file.exists(allCountsFile) && !forceRun){
+    return()
+  }
+  
+  char_types <- charTypes
+  site_types <- siteTypes
+  
+  start_dates <- seq(as.Date(paste0(startYr, '-01-01')), 
+                     as.Date(paste0(endYr, '-01-01')),
+                     by = 'year')
+  
+  query_combinations <- expand.grid(char_types = char_types, site_types = site_types, 
+                                    start_dates = start_dates, stringsAsFactors = FALSE) %>% 
+    mutate(end_dates = as.Date(format(start_dates, "%Y-12-31"))) %>% 
+    arrange(char_types, site_types)
+  
+  if(!dir.exists('cache')){dir.create('cache')}
+  
+  for(i in 1:nrow(query_combinations)){
+    char_type <- query_combinations$char_types[i]
+    site_type <- query_combinations$site_types[i]
+    start_date <- query_combinations$start_dates[i]
+    end_date <- query_combinations$end_dates[i]
+    
+    if(char_type != "Population/Community"){
+      sitefile <- paste("counts", char_type, site_type, sep = "_")
+    } else {
+      sitefile <- paste("counts", "Population-Community", site_type, sep = "_")
+    }
+    sitefile <- paste0(sitefile, '.csv')
+    sitefilepath <- file.path('cache', sitefile)
+    
+    new_site <- i == 1 || site_type != query_combinations$site_types[i-1]
+    if(new_site){
+      counts_df <- data.frame()
+    }
+    
+    if(file.exists(sitefilepath) && !forceRun){
+      next
+    } 
+    
+    counts_df_i <- createCountDF(char_type, site_type, start_date, end_date)
+    counts_df <- rbind(counts_df, counts_df_i)
+    
+    lastOfSiteType <- site_type != query_combinations$site_types[i+1] || i == nrow(query_combinations)
+    if(lastOfSiteType){
+      write.csv(counts_df, sitefilepath, row.names = FALSE)
+    }
+    
+    print(paste(char_type, site_type, format(start_date, '%Y'), sep=" >>> "))
+  }
+  
+  n_unique <- query_combinations %>% 
+    select(char_types, site_types) %>% 
+    unique() %>% nrow()
+  
+  files <- file.path('cache', list.files('cache', pattern = "counts"))
+  if(length(files) == n_unique){
+    counts_all_list <- lapply(files, read.csv, stringsAsFactors = FALSE)
+    counts_all_df <- do.call(rbind, counts_all_list)
+    
+    if(!dir.exists('data')){dir.create('data')}
+    write.csv(counts_all_df, allCountsFile, row.names = FALSE)
+  }
+  
+}
 
 # change site and characteristic types for the plot labels
 displayChars <- function(characteristicType){
@@ -117,18 +250,13 @@ createRecordsBarchart <- function(results_data, type = "percent"){
 plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")),
                                    allCountsFile = 'data/wqp_database_counts.csv'){
   
-  library(dplyr)
-  library(ggplot2)
-  library(gtable)
-  library(grid)
-  
   if(!dir.exists('figures')){dir.create('figures')}
   
   temporal_data <- read.csv(allCountsFile, stringsAsFactors = FALSE)
   # replace NA values w/ 0
   temporal_data$numSites[is.na(temporal_data$numSites)] <- 0
   temporal_data$numResults[is.na(temporal_data$numResults)] <- 0
-    
+  
   total_bar <- temporal_data %>% 
     group_by(siteType) %>% 
     summarize(numSites = sum(numSites),
@@ -206,7 +334,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
           strip.background = element_blank(),
           strip.text = element_blank(),
           plot.margin=unit(c(0.6,1.4,0.9,0.2),"lines")) #top, right, bottom, left
-   
+  
   # put the bar chart and spark lines together
   g <- ggplotGrob(records_plot)
   g <- gtable_add_cols(g, unit(5,"cm"))
@@ -223,3 +351,35 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
 }
 
 
+## Workflow (using the functions)
+
+# 1. Create a csv file of the WQP counts. 
+
+  # This example is querying data for the last 10 years for Nutrient &  Toxicity characteristic types only, 
+  # and will take about 12 minutes. If you keep the defaults (1950, and all characteristic types), it 
+  # will take a little over 10 hours. You will see each completed query printed to the console to help 
+  # you follow the WQP query process. These queries cache individual files (each site type, characteristic 
+  # type combination is one file). Once all files are cached, the function will create a single CSV file 
+  # stored in data/. If the function is aborted, you can just rerun getAllRecordsCounts() and it will skip 
+  # the queries that already have stored files in cache/.
+
+library(dataRetrieval)
+library(dplyr)
+library(httr)
+
+getAllRecordsCounts(startYr = 2006, charTypes = c('Nutrient', 'Toxicity'))
+
+# 2. Create the bar chart and sparklines figure.
+
+  # Once the data/wqp_database_counts.csv file exists, you can use the plotting functions. This function will 
+  # create the the barchart with sparklines figure and save it as a PNG in figures/. 
+
+library(dplyr)
+library(ggplot2)
+library(gtable)
+library(grid)
+
+plotSparklinesBarchart(startYr = 2006)
+
+# You should be able to see the new folders (cache, data, figures) in your working directory:
+getwd()
