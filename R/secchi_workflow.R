@@ -1,4 +1,4 @@
-get_all_us_secchi = function(outfile, characteristicNames, siteTypes, stateCode,
+get_us_secchi = function(outfile, characteristicNames, siteTypes, stateCode,
                              startDateLo='1980-01-01', startDateHi='2016-01-01'){
   
   metadata <- NULL
@@ -97,14 +97,14 @@ characteristicNames = c("Depth, Secchi disk depth", "Depth, Secchi disk depth (c
 siteTypes = "Lake, Reservoir, Impoundment"
 
 # To get the full data set used to produce the figure in the text:
-# get_all_us_secchi(outfile="all_secchi_usa.RData", 
+# get_us_secchi(outfile="all_secchi_usa.RData", 
 #                   characteristicNames, 
 #                   siteTypes, 
 #                   stateCode = dataRetrieval::stateCd$STATE[1:50],
 #                   '1980-01-01', '2016-01-01')
 
 # To get the small subset to test the workflow:
-get_all_us_secchi(outfile="sub_secchi_usa.RData", 
+get_us_secchi(outfile="sub_secchi_usa.RData", 
                   "Depth, Secchi disk depth", 
                   siteTypes, 
                   dataRetrieval::stateCd$STATE[1:2],
