@@ -148,6 +148,7 @@ characteristicNames = c("Depth, Secchi disk depth",
 siteTypes = "Lake, Reservoir, Impoundment"
 
 # To get the full data set used to produce the figure in the text:
+# This takes roughly  minutes
 # get_us_secchi(outfile="all_secchi_usa_long.rds",
 #               characteristicNames,
 #               siteTypes,
@@ -157,6 +158,7 @@ siteTypes = "Lake, Reservoir, Impoundment"
 #               stride = "20 years")
 
 # To get the small subset to test the workflow:
+# This takes roughly 5 minutes
 get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               characteristicNames,
               siteTypes,
@@ -212,4 +214,4 @@ secchi.plot <- ggplot(data=secchi.data.1) +
   scale_x_continuous(labels = c("May","Jul", "Sep", "Nov"),
                      breaks = c(17.14286, 25.85714, 34.71429, 43.42857))
 
-secchi.plot
+ggsave(plot = secchi.plot, filename = "secchi.png")
