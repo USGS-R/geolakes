@@ -16,7 +16,7 @@ get_us_secchi = function(outfile,
     secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
                                       startDateHi = startDateHi, 
                                       characteristicName=characteristicNames, 
-                                      siteType=siteTypes,
+                                      if(any(siteTypes == "All")) siteType=siteTypes,
                                       stride=stride)
     secchi.state <- secchi.state %>% 
       left_join(unit.map, by='units') %>% 
@@ -31,7 +31,7 @@ get_us_secchi = function(outfile,
                                          startDateHi = startDateHi, 
                                          statecode=state, 
                                          characteristicName=characteristicNames, 
-                                         siteType=siteTypes,
+                                        if(any(siteTypes == "All")) siteType=siteTypes,
                                         stride=stride)
       if(!is.null(secchi.state)){
         secchi.state <- secchi.state %>% 
@@ -145,23 +145,22 @@ characteristicNames = c("Depth, Secchi disk depth",
                         "Secchi Reading Condition (choice list)", 
                         "Secchi depth", 
                         "Water transparency, Secchi disc")
-siteTypes = "Lake, Reservoir, Impoundment"
 
 # To get the full data set used to produce the figure in the text:
 # This takes roughly 15 minutes
-# get_us_secchi(outfile="all_secchi_usa_long.rds",
-#               characteristicNames,
-#               siteTypes,
-#               stateCode = "All",
-#               startDateLo = '1900-01-01',
-#               startDateHi = '2016-01-01',
-#               stride = "20 years")
+get_us_secchi(outfile="all_secchi_usa_long.rds",
+              characteristicNames,
+              siteTypes = "All",
+              stateCode = "All",
+              startDateLo = '1900-01-01',
+              startDateHi = '2016-01-01',
+              stride = "20 years")
 
 # To get the small subset to test the workflow:
 # This takes roughly 3 minutes
 get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               characteristicNames,
-              siteTypes,
+              siteTypes = "Lake, Reservoir, Impoundment",
               stateCode = c("01","27"), #AL and MN
               startDateLo = '2000-01-01', 
               startDateHi = '2016-01-01',
