@@ -12,22 +12,35 @@ get_us_secchi = function(outfile,
   metadata <- NULL
   secchi <- NULL
   
-  for(state in stateCode){
+  if(stateCode == "All"){
     secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
-                                       startDateHi = startDateHi, 
-                                       statecode=state, 
-                                       characteristicName=characteristicNames, 
-                                       siteType=siteTypes,
+                                      startDateHi = startDateHi, 
+                                      characteristicName=characteristicNames, 
+                                      siteType=siteTypes,
                                       stride=stride)
-    if(!is.null(secchi.state)){
-      secchi.state <- secchi.state %>% 
-        left_join(unit.map, by='units') %>% 
-        mutate(secchi=value*convert,
-               StateCode = as.character(StateCode)) %>% 
-        filter(!is.na(secchi)) %>% 
-        select(Date, wqx.id, secchi, dec_lat_va, dec_lon_va, StateCode)
-      
-      secchi <- bind_rows(secchi, secchi.state)
+    secchi.state <- secchi.state %>% 
+      left_join(unit.map, by='units') %>% 
+      mutate(secchi=value*convert) %>% 
+      filter(!is.na(secchi)) 
+    
+    secchi <- secchi.state
+  } else {
+  
+    for(state in stateCode){
+      secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
+                                         startDateHi = startDateHi, 
+                                         statecode=state, 
+                                         characteristicName=characteristicNames, 
+                                         siteType=siteTypes,
+                                        stride=stride)
+      if(!is.null(secchi.state)){
+        secchi.state <- secchi.state %>% 
+          left_join(unit.map, by='units') %>% 
+          mutate(secchi=value*convert) %>% 
+          filter(!is.na(secchi)) 
+        
+        secchi <- bind_rows(secchi, secchi.state)
+      }
     }
   }
   
@@ -73,7 +86,7 @@ readWQPdataPaged = function(...,
     params$startDateHi = ends[i]
     
     if(starts[[i]] != ends[[i]]){
-      chunk.call = do.call(retryWQP, params)
+      chunk.call = do.call(readWQPdata, params)
     
       if(!is.null(chunk.call)){
         meta <- attr(chunk.call, "siteInfo") %>%
@@ -85,7 +98,15 @@ readWQPdataPaged = function(...,
                              units=ResultMeasure.MeasureUnitCode) %>% 
           left_join(meta, by="MonitoringLocationIdentifier") %>%
           rename(wqx.id=MonitoringLocationIdentifier) %>%
-          select(Date, value, units, wqx.id, dec_lat_va, dec_lon_va, StateCode)
+          mutate(StateCode = as.character(StateCode),
+                 ActivityTypeCode = as.character(ActivityTypeCode),
+                 ActivityMediaName = as.character(ActivityMediaName),
+                 ResultStatusIdentifier = as.character(ResultStatusIdentifier)) %>%
+          select(Date, value, units, wqx.id, 
+                 dec_lat_va, dec_lon_va, 
+                 StateCode, 
+                 ActivityTypeCode,ActivityMediaName,
+                 ResultStatusIdentifier)
         
         out[[i]] <- chunk.call       
       }
@@ -102,55 +123,38 @@ readWQPdataPaged = function(...,
                            wqx.id = character(),
                            dec_lat_va = numeric(),
                            dec_lon_va = numeric(),
-                           StateCode = character())
+                           StateCode = character(),
+                           ActivityTypeCode = character(),
+                           ActivityMediaName = character(),
+                           ResultStatusIdentifier = character())
   }
   
   return(out.data)
 
 }
 
-retryWQP <- function(..., retries=3){
-  
-  safeWQP = function(...){
-    result = tryCatch({
-      readWQPdata(...)
-    }, error = function(e) {
-      if(e$message == 'Operation was aborted by an application callback'){
-        stop(e)
-      }
-      return(NULL)
-    })
-    return(result)
-  }
-  retry = 1
-  while (retry < retries){
-    result = safeWQP(...)
-    if (!is.null(result)){
-      retry = retries
-    } else {
-      message('query failed, retrying')
-      retry = retry+1
-    }
-  }
-  return(result)
-}
+
 
 library(dplyr)
 library(dataRetrieval)
 library(lubridate)
 library(ggplot2)
 
-characteristicNames = c("Depth, Secchi disk depth", "Depth, Secchi disk depth (choice list)", "Secchi Reading Condition (choice list)", "Secchi depth", "Water transparency, Secchi disc")
+characteristicNames = c("Depth, Secchi disk depth", 
+                        "Depth, Secchi disk depth (choice list)", 
+                        "Secchi Reading Condition (choice list)", 
+                        "Secchi depth", 
+                        "Water transparency, Secchi disc")
 siteTypes = "Lake, Reservoir, Impoundment"
 
-lower.48 <- stateCd$STATE[1:50]
-lower.48 <- lower.48[!(stateCd$STUSAB[1:50] %in% c("AL","HI"))]
 # To get the full data set used to produce the figure in the text:
-# get_us_secchi(outfile="all_secchi_usa.rds",
-#                   characteristicNames,
-#                   siteTypes,
-#                   stateCode = lower.48,
-#                   '1980-01-01', '2016-01-01')
+get_us_secchi(outfile="all_secchi_usa_long.rds",
+              characteristicNames,
+              siteTypes,
+              stateCode = "All",
+              startDateLo = '1900-01-01',
+              startDateHi = '2016-01-01',
+              stride = "20 years")
 
 # To get the small subset to test the workflow:
 get_us_secchi(outfile="sub_secchi_WI_MN.rds",
@@ -159,31 +163,47 @@ get_us_secchi(outfile="sub_secchi_WI_MN.rds",
                 stateCode = c("01","12","27","55"), #AL, FL, WI, and MN
                 '2000-01-01', '2016-01-01')
 
-infile <- "sub_secchi_WI_MN.rds"
+infile <- "all_secchi_usa_long.rds"
 secchi.data <- readRDS(infile)
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
-                                     'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='west', stringsAsFactors = FALSE) %>% 
+                                     'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>% 
   rbind(data.frame(STATE_NAME=c('Ohio', 'Indiana', 'Illinois', 'Wisconsin', 'Missouri', 'Iowa', 'Minnesota', 'Kansas',
-                                'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='midwest', stringsAsFactors = FALSE)) %>% 
+                                'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='Midwest', stringsAsFactors = FALSE)) %>% 
   rbind(data.frame(STATE_NAME=c('Maine', 'New Hampshire', 'Vermont', 'Massachusetts', 'Rhode Island', 'Connecticut', 
-                                'New Jersey', 'Pennsylvania', 'New York'), group='northeast', stringsAsFactors = FALSE)) %>% 
+                                'New Jersey', 'Pennsylvania', 'New York'), group='Northeast', stringsAsFactors = FALSE)) %>% 
   rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina', 
                                 'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland', 
-                                'Delaware', 'Alabama', 'Mississippi'), group='south', stringsAsFactors = FALSE))
+                                'Delaware', 'Alabama', 'Mississippi'), group='South', stringsAsFactors = FALSE))
 
-secchi.data.1 <- left_join(secchi.data, stateCd, by=c("StateCode" = "STATE")) %>%
+secchi.filtered <- secchi.data %>%
+  filter(ActivityTypeCode %in% c("Field Msr/Obs","Sample-Routine",
+                                 "Field Msr/Obs-Portable Data Logger",
+                                 "Sample-Composite Without Parents",
+                                 "Sample-Field Split","Sample-Other")) %>%
+  filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
+  filter(!is.na(StateCode))
+
+secchi.data.1 <- secchi.filtered %>%
+  left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
   mutate(week = lubridate::week(Date)) %>% 
   filter(week > 13 & week < 47) %>%
   group_by(week, group) %>%
-  summarize(med = median(secchi, na.rm=TRUE), 
-            q25 = quantile(secchi, na.rm=TRUE, probs = .25),
-            q75 = quantile(secchi, na.rm=TRUE, probs = .75))
+  summarize(med = median(secchi, na.rm=TRUE)) %>%
+  filter(!is.na(group)) 
 
-secchi.plat <- ggplot(data=secchi.data.1) +
+secchi.plot <- ggplot(data=secchi.data.1) +
   geom_line(aes(x=week, y=med, color=group), size=2) +
+  scale_color_manual(values=c(West = '#283044', 
+                              South = '#F7CB65',
+                              Northeast='#2c7fb8', 
+                              Midwest = '#7FCDBB')) +
   ylab("Secchi depth (m)") +
-  xlab("Week of the year") +
-  theme_bw()
+  xlab("") +
+  theme_bw() + 
+  theme(legend.title = element_blank()) +
+  scale_x_continuous(labels = c("May","Jul", "Sep", "Nov"),
+                     breaks = c(17.14286, 25.85714, 34.71429, 43.42857))
 
+secchi.plot
