@@ -182,12 +182,16 @@ secchi.filtered <- secchi.data %>%
                                  "Sample-Composite Without Parents",
                                  "Sample-Field Split","Sample-Other")) %>%
   filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
-  filter(!is.na(StateCode))
-
-secchi.data.1 <- secchi.filtered %>%
+  filter(!is.na(StateCode)) %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
-  mutate(week = lubridate::week(Date)) %>% 
+  filter(!is.na(group)) %>%
+  mutate(week = lubridate::week(Date)) 
+
+group_by(secchi.filtered, group) %>% summarize(nSites = length(unique(wqx.id)))
+table(select(secchi.filtered, group))
+
+secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
   group_by(week, group) %>%
   summarize(med = median(secchi, na.rm=TRUE)) %>%
