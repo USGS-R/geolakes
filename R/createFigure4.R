@@ -195,7 +195,7 @@ group_by(secchi.filtered, group) %>% summarize(nSites = length(unique(wqx.id)))
 table(select(secchi.filtered, group))
 
 df <- data.frame(table(select(secchi.filtered, StateCode)))
-df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by="Var1"="STATE")
+df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE"))
 
 secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
