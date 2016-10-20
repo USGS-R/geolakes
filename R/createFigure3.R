@@ -195,6 +195,9 @@ secchi.filtered <- secchi.data %>%
 group_by(secchi.filtered, group) %>% summarize(nSites = length(unique(wqx.id)))
 table(select(secchi.filtered, group))
 
+df <- data.frame(table(select(secchi.filtered, StateCode)))
+df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by="Var1"="STATE")
+
 secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
   group_by(week, group) %>%
@@ -211,6 +214,7 @@ secchi.plot <- ggplot(data=secchi.data.1) +
   xlab("") +
   theme_bw() + 
   theme(legend.title = element_blank()) +
+  expand_limits(y = 0) +
   scale_x_continuous(labels = c("May","Jul", "Sep", "Nov"),
                      breaks = c(17.14286, 25.85714, 34.71429, 43.42857))
 
