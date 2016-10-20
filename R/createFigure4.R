@@ -147,14 +147,14 @@ characteristicNames = c("Depth, Secchi disk depth",
                         "Water transparency, Secchi disc")
 
 # To get the full data set used to produce the figure in the text:
-# This takes roughly 15 minutes
-get_us_secchi(outfile="all_secchi_usa_long.rds",
-              characteristicNames,
-              siteTypes = "All",
-              stateCode = "All",
-              startDateLo = '1900-01-01',
-              startDateHi = '2016-01-01',
-              stride = "20 years")
+# This takes roughly 1 hour to complete:
+# get_us_secchi(outfile="all_secchi_usa_long.rds",
+#               characteristicNames,
+#               siteTypes = "All",
+#               stateCode = "All",
+#               startDateLo = '1900-01-01',
+#               startDateHi = '2016-01-01',
+#               stride = "20 years")
 
 # To get the small subset to test the workflow:
 # This takes roughly 3 minutes
@@ -196,6 +196,7 @@ table(select(secchi.filtered, group))
 
 df <- data.frame(table(select(secchi.filtered, StateCode)))
 df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE"))
+df <- arrange(df, desc(Freq))
 
 secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
