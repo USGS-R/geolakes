@@ -12,7 +12,7 @@ get_us_secchi = function(outfile,
   metadata <- NULL
   secchi <- NULL
   
-  if(stateCode == "All"){
+  if(all(stateCode == "All")){
     secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
                                       startDateHi = startDateHi, 
                                       characteristicName=characteristicNames, 
@@ -148,22 +148,24 @@ characteristicNames = c("Depth, Secchi disk depth",
 siteTypes = "Lake, Reservoir, Impoundment"
 
 # To get the full data set used to produce the figure in the text:
-get_us_secchi(outfile="all_secchi_usa_long.rds",
+# get_us_secchi(outfile="all_secchi_usa_long.rds",
+#               characteristicNames,
+#               siteTypes,
+#               stateCode = "All",
+#               startDateLo = '1900-01-01',
+#               startDateHi = '2016-01-01',
+#               stride = "20 years")
+
+# To get the small subset to test the workflow:
+get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               characteristicNames,
               siteTypes,
-              stateCode = "All",
-              startDateLo = '1900-01-01',
+              stateCode = c("01","27"), #AL and MN
+              startDateLo = '2000-01-01', 
               startDateHi = '2016-01-01',
               stride = "20 years")
 
-# To get the small subset to test the workflow:
-get_us_secchi(outfile="sub_secchi_WI_MN.rds",
-                characteristicNames,
-                siteTypes,
-                stateCode = c("01","12","27","55"), #AL, FL, WI, and MN
-                '2000-01-01', '2016-01-01')
-
-infile <- "all_secchi_usa_long.rds"
+infile <- "sub_secchi_AL_MN.rds"
 secchi.data <- readRDS(infile)
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
