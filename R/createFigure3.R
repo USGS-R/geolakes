@@ -148,7 +148,7 @@ characteristicNames = c("Depth, Secchi disk depth",
 siteTypes = "Lake, Reservoir, Impoundment"
 
 # To get the full data set used to produce the figure in the text:
-# This takes roughly  minutes
+# This takes roughly 15 minutes
 # get_us_secchi(outfile="all_secchi_usa_long.rds",
 #               characteristicNames,
 #               siteTypes,
@@ -158,7 +158,7 @@ siteTypes = "Lake, Reservoir, Impoundment"
 #               stride = "20 years")
 
 # To get the small subset to test the workflow:
-# This takes roughly 5 minutes
+# This takes roughly 3 minutes
 get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               characteristicNames,
               siteTypes,
@@ -167,7 +167,7 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               startDateHi = '2016-01-01',
               stride = "20 years")
 
-infile <- "sub_secchi_AL_MN.rds"
+infile <- "all_secchi_usa_long.rds"
 secchi.data <- readRDS(infile)
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
