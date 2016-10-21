@@ -13,11 +13,17 @@ get_us_secchi = function(outfile,
   secchi <- NULL
   
   if(all(stateCode == "All")){
-    secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
-                                      startDateHi = startDateHi, 
-                                      characteristicName=characteristicNames, 
-                                      if(any(siteTypes == "All")) siteType=siteTypes,
-                                      stride=stride)
+    
+    params <- list(startDateLo = startDateLo, 
+                   startDateHi = startDateHi, 
+                   characteristicName=characteristicNames, 
+                   siteType = ifelse(any(siteTypes != "All"), siteTypes,NULL),
+                   stride=stride)
+    
+    params <- params[!unlist(lapply(params, is.null))]
+    
+    secchi.state <-  do.call(readWQPdataPaged, params)
+    
     secchi.state <- secchi.state %>% 
       left_join(unit.map, by='units') %>% 
       mutate(secchi=value*convert) %>% 
@@ -27,12 +33,18 @@ get_us_secchi = function(outfile,
   } else {
   
     for(state in stateCode){
-      secchi.state <-  readWQPdataPaged(startDateLo = startDateLo, 
-                                         startDateHi = startDateHi, 
-                                         statecode=state, 
-                                         characteristicName=characteristicNames, 
-                                        if(any(siteTypes == "All")) siteType=siteTypes,
-                                        stride=stride)
+      
+      params <- list(startDateLo = startDateLo, 
+                     startDateHi = startDateHi, 
+                     characteristicName=characteristicNames, 
+                     statecode = state,
+                     siteType = ifelse(any(siteTypes != "All"), siteTypes,NULL),
+                     stride=stride)
+      
+      params <- params[!unlist(lapply(params, is.null))]
+      
+      secchi.state <-  do.call(readWQPdataPaged, params)
+
       if(!is.null(secchi.state)){
         secchi.state <- secchi.state %>% 
           left_join(unit.map, by='units') %>% 
@@ -148,9 +160,9 @@ characteristicNames = c("Depth, Secchi disk depth",
 
 # To get the full data set used to produce the figure in the text:
 # This takes roughly 1 hour to complete:
-# get_us_secchi(outfile="all_secchi_usa_long.rds",
+# get_us_secchi(outfile="all_secchi_usa_lakes.rds",
 #               characteristicNames,
-#               siteTypes = "All",
+#               siteTypes = "Lake, Reservoir, Impoundment",
 #               stateCode = "All",
 #               startDateLo = '1900-01-01',
 #               startDateHi = '2016-01-01',
@@ -162,11 +174,11 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               characteristicNames,
               siteTypes = "Lake, Reservoir, Impoundment",
               stateCode = c("01","27"), #AL and MN
-              startDateLo = '2000-01-01', 
+              startDateLo = '2000-01-01',
               startDateHi = '2016-01-01',
               stride = "20 years")
 
-infile <- "all_secchi_usa_long.rds"
+infile <- "all_secchi_usa_lakes.rds"
 secchi.data <- readRDS(infile)
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
