@@ -244,12 +244,6 @@ secchi.plot <- ggplot(data=secchi.data.1) +
 
 all_states <- map_data("state")
 fill.states <- left_join(all_states, regions, by="region")
-plot.CRS <- "+init=epsg:2163"
-
-coordinates(fill.states) <- ~ long + lat
-proj4string(site_data_sub) <- CRS("+proj=longlat +ellps=GRS80 +no_defs")
-
-site_data_sub <- spTransform(site_data_sub, CRS("+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +a=6370997 +b=6370997 +units=m +no_defs"))
 
 map.legend <- ggplot(data=fill.states) +
   geom_polygon(aes(x=long, y=lat, group = group, fill=area),
@@ -257,13 +251,15 @@ map.legend <- ggplot(data=fill.states) +
   coord_map(proj='bonne', param=45) +
   theme_bw() +
   theme(legend.position="none",
-        panel.background = element_rect(fill = "transparent",colour = NA),
+        panel.background = element_blank(),
         panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_blank(),
         text = element_blank(),
-        line = element_blank())  +
+        line = element_blank(),
+        panel.margin = unit(c(0, 0, 0, 0), "cm"),
+        plot.background = element_rect(fill = "transparent",colour = NA))  +
   scale_fill_manual(values = col.scheme) +
   scale_y_continuous(expand = c(0,0)) + 
   scale_x_continuous(expand = c(0,0))
@@ -272,8 +268,8 @@ g2 = ggplotGrob(map.legend)
 
 final.plot <- secchi.plot +
   annotation_custom(grob = g2, 
-                    xmin=39, xmax=48,
+                    xmin=30, xmax=52,
                     ymin=4, ymax=5.5)
-
+final.plot
 ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74)
 
