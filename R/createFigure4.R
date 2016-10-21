@@ -219,8 +219,19 @@ df <- arrange(df, desc(Freq))
 secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
   group_by(week, area) %>%
-  summarize(med = median(secchi, na.rm=TRUE)) %>%
+  summarize(med = median(secchi, na.rm=TRUE),
+            q25 = quantile(secchi, na.rm=TRUE, probs = .25),
+            q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
   filter(!is.na(area)) 
+
+secchi.data.overall <- secchi.filtered %>% 
+  filter(week > 13 & week < 47) %>%
+  group_by(area) %>%
+  summarize(med = median(secchi, na.rm=TRUE),
+            q25 = quantile(secchi, na.rm=TRUE, probs = .25),
+            q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
+  filter(!is.na(area)) 
+  
 
 col.scheme <- c(West = '#283044', 
                 South = '#F7CB65',
