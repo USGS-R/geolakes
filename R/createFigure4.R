@@ -151,6 +151,9 @@ library(dplyr)
 library(dataRetrieval)
 library(lubridate)
 library(ggplot2)
+library(maps)
+library(grid)
+library(gridExtra)
 
 characteristicNames = c("Depth, Secchi disk depth", 
                         "Depth, Secchi disk depth (choice list)", 
@@ -178,7 +181,7 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               startDateHi = '2016-01-01',
               stride = "20 years")
 
-infile <- "all_secchi_usa_lakes.rds"
+infile <- "sub_secchi_AL_MN.rds"
 secchi.data <- readRDS(infile)
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
@@ -190,6 +193,8 @@ regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington'
   rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina', 
                                 'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland', 
                                 'Delaware', 'Alabama', 'Mississippi'), group='South', stringsAsFactors = FALSE))
+regions$region <- tolower(regions$STATE_NAME)
+regions <- rename(regions, area = group)
 
 secchi.filtered <- secchi.data %>%
   filter(ActivityTypeCode %in% c("Field Msr/Obs","Sample-Routine",
@@ -200,11 +205,11 @@ secchi.filtered <- secchi.data %>%
   filter(!is.na(StateCode)) %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
-  filter(!is.na(group)) %>%
+  filter(!is.na(area)) %>%
   mutate(week = lubridate::week(Date)) 
 
-group_by(secchi.filtered, group) %>% summarize(nSites = length(unique(wqx.id)))
-table(select(secchi.filtered, group))
+group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
+table(select(secchi.filtered, area))
 
 df <- data.frame(table(select(secchi.filtered, StateCode)))
 df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE"))
@@ -212,22 +217,55 @@ df <- arrange(df, desc(Freq))
 
 secchi.data.1 <- secchi.filtered %>% 
   filter(week > 13 & week < 47) %>%
-  group_by(week, group) %>%
+  group_by(week, area) %>%
   summarize(med = median(secchi, na.rm=TRUE)) %>%
-  filter(!is.na(group)) 
+  filter(!is.na(area)) 
+
+col.scheme <- c(West = '#283044', 
+                South = '#F7CB65',
+                Northeast='#2c7fb8', 
+                Midwest = '#7FCDBB')
 
 secchi.plot <- ggplot(data=secchi.data.1) +
-  geom_line(aes(x=week, y=med, color=group), size=2) +
-  scale_color_manual(values=c(West = '#283044', 
-                              South = '#F7CB65',
-                              Northeast='#2c7fb8', 
-                              Midwest = '#7FCDBB')) +
+  geom_line(aes(x=week, y=med, color=area), size=1) +
+  scale_color_manual(values=col.scheme) +
   ylab("Secchi depth (m)") +
   xlab("") +
   theme_bw() + 
-  theme(legend.title = element_blank()) +
+  theme(legend.position="none",
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(size = 1, color="black")) + 
   expand_limits(y = 0) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0,5.5)) +
   scale_x_continuous(labels = c("May","Jul", "Sep", "Nov"),
                      breaks = c(17.14286, 25.85714, 34.71429, 43.42857))
 
-ggsave(plot = secchi.plot, filename = "secchi.png")
+all_states <- map_data("state")
+fill.states <- left_join(all_states, regions, by="region")
+
+map.legend <- ggplot(data=fill.states) +
+  geom_polygon(aes(x=long, y=lat, group = group, fill=area),
+               colour="white", size = 0.1) +
+  theme_bw() +
+  theme(legend.position="none",
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_blank(),
+        text = element_blank(),
+        line = element_blank())  +
+  scale_fill_manual(values = col.scheme) +
+  scale_y_continuous(expand = c(0,0)) + 
+  scale_x_continuous(expand = c(0,0))
+
+g2 = ggplotGrob(map.legend)
+
+final.plot <- secchi.plot +
+  annotation_custom(grob = g2, 
+                    xmin=39, xmax=48,
+                    ymin=4, ymax=5.5)
+
+ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74)
+
