@@ -1,3 +1,8 @@
+### functions for retrieving WQP secchi data and creating a  ###
+
+# To run everything, select all lines of code and click "Run" OR source this file.
+
+# get secchi data from WQP and save as .RDS file
 get_us_secchi = function(outfile, 
                          characteristicNames, 
                          siteTypes, 
@@ -60,6 +65,7 @@ get_us_secchi = function(outfile,
   
 }
 
+# incrementally query WQP using the stride arg (called from get_us_secchi)
 readWQPdataPaged = function(..., 
                             startDateLo='1950-01-01', 
                             startDateHi='2020-01-01', 
@@ -145,6 +151,8 @@ readWQPdataPaged = function(...,
 
 }
 
+## Workflow (using the functions)
+
 library(dplyr)
 library(dataRetrieval)
 library(lubridate)
@@ -152,6 +160,8 @@ library(ggplot2)
 library(maps)
 library(grid)
 library(gridExtra)
+
+# 1. Download secchi data for all of US or subset
 
 characteristicNames = c("Depth, Secchi disk depth", 
                         "Depth, Secchi disk depth (choice list)", 
@@ -181,6 +191,9 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
 
 infile <- "sub_secchi_AL_MN.rds"
 secchi.data <- readRDS(infile)
+
+
+# 2. Group states into regions and get only df with necessary info
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
                                      'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>% 
@@ -229,6 +242,8 @@ secchi.data.overall <- secchi.filtered %>%
             q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
   filter(!is.na(area)) 
   
+
+# 3. Plot secchi over time for each region and add a map to show regions
 
 col.scheme <- c(West = '#283044', 
                 South = '#F7CB65',
