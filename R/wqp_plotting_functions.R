@@ -218,7 +218,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   
   grid.newpage()
   grid.draw(g)
-  ggsave('figures/records_w_sparklines2.png', height=4.6, width=6.5, units='in', dpi=600, g)
+  ggsave('figures/records_w_sparklines2.pdf', height=115, width=190, units='mm', dpi=2242, g)
   dev.off()
 }
 
