@@ -93,7 +93,7 @@ createRecordsBarchart <- function(results_data, type = "percent"){
       coord_flip() + 
       theme_classic() + 
       scale_fill_manual(values = site_cols, name = "Site Type") +
-      theme(axis.text.y = element_text(size = 8)) 
+      theme(axis.text.y = element_text(size = 6)) 
     
   } else if(type == "absolute"){
     # absolute number of records plot
@@ -107,7 +107,7 @@ createRecordsBarchart <- function(results_data, type = "percent"){
       coord_flip() + 
       theme_classic() + 
       scale_fill_manual(values = site_cols, name = "Site Type") +
-      theme(axis.text.y = element_text(size = 8)) 
+      theme(axis.text.y = element_text(size = 6)) 
   }
   
   return(records_plot)
@@ -217,8 +217,8 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
                        t=7, l=4, b=7, r=4)
   
   grid.newpage()
-  png('figures/records_w_sparklines.png', width = 600)
   grid.draw(g)
+  ggsave('figures/records_w_sparklines2.pdf', height=115, width=190, units='mm', dpi=2242, g)
   dev.off()
 }
 
