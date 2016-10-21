@@ -145,8 +145,6 @@ readWQPdataPaged = function(...,
 
 }
 
-
-
 library(dplyr)
 library(dataRetrieval)
 library(lubridate)
@@ -154,7 +152,6 @@ library(ggplot2)
 library(maps)
 library(grid)
 library(gridExtra)
-library(rgdal)
 
 characteristicNames = c("Depth, Secchi disk depth", 
                         "Depth, Secchi disk depth (choice list)", 
