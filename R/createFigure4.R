@@ -294,5 +294,5 @@ final.plot <- secchi.plot +
                     xmin=30, xmax=52,
                     ymin=4, ymax=5.5)
 final.plot
-ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74)
+ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74, height = 4.14)
 
