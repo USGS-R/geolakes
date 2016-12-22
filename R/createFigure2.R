@@ -200,7 +200,7 @@ createRecordsBarchart <- function(results_data, type = "percent"){
   data <- numResults_siteType %>% 
     left_join(totalnumResults, by='display_charType') %>% 
     mutate(percentResults = (numResults_siteType/totalnumResults)*100) %>% 
-    mutate(charTypeLabels = paste0(display_charType, "\n (", totalnumResults, ")"))
+    mutate(charTypeLabels = paste0(display_charType, "\n (n=", totalnumResults, ")"))
   
   site_order <- c('Facility', 'Groundwater', 'Lake', 'Marine', 'Stream', 'Other')
   data_order <- arrange(data, totalnumResults)
