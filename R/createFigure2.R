@@ -200,7 +200,10 @@ createRecordsBarchart <- function(results_data, type = "percent"){
   data <- numResults_siteType %>% 
     left_join(totalnumResults, by='display_charType') %>% 
     mutate(percentResults = (numResults_siteType/totalnumResults)*100) %>% 
-    mutate(charTypeLabels = paste0(display_charType, "\n (", totalnumResults, ")"))
+    mutate(charTypeLabels = paste0(display_charType, "\n (n=", prettyNum(totalnumResults, 
+                                                                         big.mark=",", 
+                                                                         scientific=FALSE,
+                                                                         preserve.width="none"), ")"))
   
   site_order <- c('Facility', 'Groundwater', 'Lake', 'Marine', 'Stream', 'Other')
   data_order <- arrange(data, totalnumResults)
@@ -323,7 +326,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
           axis.ticks.x = element_blank(),
           axis.text.x = element_text(margin = margin(b = -1, unit = 'line'), 
                                      face = 'italic', size = 8, hjust = 0, 
-                                     vjust = 0, angle = 45),
+                                     vjust = 0, angle = -90),
           axis.title.x = element_blank(),
           axis.ticks.y = element_blank(),
           axis.text.y = element_blank(),
@@ -339,10 +342,10 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   g <- ggplotGrob(records_plot)
   g <- gtable_add_cols(g, unit(5,"cm"))
   g <- gtable_add_grob(g, ggplotGrob(sparklines),
-                       t=1, l=ncol(g), b=5, r=ncol(g))
+                       t=2, l=ncol(g), b=8, r=ncol(g))
   g <- gtable_add_rows(g, unit(1.5,"cm"))
   g <- gtable_add_grob(g, records_plot_legend,
-                       t=7, l=4, b=7, r=4)
+                       t=11, l=4, b=11, r=4)
   
   grid.newpage()
   png('figures/records_w_sparklines.png', width = 600)
