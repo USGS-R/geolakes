@@ -347,6 +347,8 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   g <- gtable_add_grob(g, records_plot_legend,
                        t=11, l=4, b=11, r=4)
   
+  ggsave('figures/records_w_sparklines.pdf', height=115, width=190, units='mm', dpi=2242, g)
+  
   grid.newpage()
   png('figures/records_w_sparklines.png', width = 600)
   grid.draw(g)
