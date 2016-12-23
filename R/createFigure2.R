@@ -326,7 +326,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
           axis.ticks.x = element_blank(),
           axis.text.x = element_text(margin = margin(b = -1, unit = 'line'), 
                                      face = 'italic', size = 8, hjust = 0, 
-                                     vjust = 0, angle = 45),
+                                     vjust = 0, angle = -90),
           axis.title.x = element_blank(),
           axis.ticks.y = element_blank(),
           axis.text.y = element_blank(),
