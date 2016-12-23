@@ -342,10 +342,10 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   g <- ggplotGrob(records_plot)
   g <- gtable_add_cols(g, unit(5,"cm"))
   g <- gtable_add_grob(g, ggplotGrob(sparklines),
-                       t=1, l=ncol(g), b=5, r=ncol(g))
+                       t=2, l=ncol(g), b=8, r=ncol(g))
   g <- gtable_add_rows(g, unit(1.5,"cm"))
   g <- gtable_add_grob(g, records_plot_legend,
-                       t=7, l=4, b=7, r=4)
+                       t=11, l=4, b=11, r=4)
   
   grid.newpage()
   png('figures/records_w_sparklines.png', width = 600)
