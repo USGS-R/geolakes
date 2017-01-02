@@ -206,6 +206,20 @@ secchi.filtered <- secchi.data %>%
   filter(!is.na(area)) %>%
   mutate(week = lubridate::week(Date)) 
 
+anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
+
+secchi.filtered <- secchi.filtered[-anyDups,] %>%
+  filter(value > 0) 
+
+unitConversion <- data.frame(units = c("m","ft","cm"),
+                             conversion = c(0.3048,1,30.48),
+                             stringsAsFactors = FALSE)
+
+secchi.filtered <- secchi.filtered %>%
+  left_join(unitConversion, by="units") %>%
+  mutate(convertedValue = value * conversion) %>%
+  filter(convertedValue < 150) 
+  
 group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
 table(select(secchi.filtered, area))
 
