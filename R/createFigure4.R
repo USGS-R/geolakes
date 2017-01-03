@@ -213,7 +213,6 @@ secchi.filtered <- secchi.data %>%
                                  "Sample-Composite Without Parents",
                                  "Sample-Field Split","Sample-Other")) %>%
   filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
-  filter(!is.na(StateCode)) %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
   filter(!is.na(area)) %>%
@@ -222,17 +221,8 @@ secchi.filtered <- secchi.data %>%
 anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
 
 secchi.filtered <- secchi.filtered[-anyDups,] %>%
-  filter(value > 0) 
+  filter(secchi > 0, secchi < 150) 
 
-unitConversion <- data.frame(units = c("m","ft","cm"),
-                             conversion = c(0.3048,1,30.48),
-                             stringsAsFactors = FALSE)
-
-secchi.filtered <- secchi.filtered %>%
-  left_join(unitConversion, by="units") %>%
-  mutate(convertedValue = value * conversion) %>%
-  filter(convertedValue < 150) 
-  
 group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
 table(select(secchi.filtered, area))
 
