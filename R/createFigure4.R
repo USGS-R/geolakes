@@ -189,10 +189,9 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               startDateLo = '2000-01-01',
               startDateHi = '2016-01-01',
               stride = "20 years")
-# 
-# infile <- "sub_secchi_AL_MN.rds"
+ 
+infile <- "sub_secchi_AL_MN.rds"
 secchi.data <- readRDS(infile)
-
 
 # 2. Group states into regions and get only df with necessary info
 
