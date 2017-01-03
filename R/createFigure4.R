@@ -174,7 +174,7 @@ characteristicNames = c("Depth, Secchi disk depth",
 # This takes roughly 1 hour to complete:
 # get_us_secchi(outfile="all_secchi_usa.rds",
 #               characteristicNames,
-#               siteTypes = "All",
+#               siteTypes = "Lake, Reservoir, Impoundment",
 #               stateCode = "All",
 #               startDateLo = '1900-01-01',
 #               startDateHi = '2016-01-01',
@@ -195,17 +195,17 @@ secchi.data <- readRDS(infile)
 
 # 2. Group states into regions and get only df with necessary info
 
-# regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
-#                                      'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>%
-#   rbind(data.frame(STATE_NAME=c('Ohio', 'Indiana', 'Illinois', 'Wisconsin', 'Missouri', 'Iowa', 'Minnesota', 'Kansas',
-#                                 'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='Midwest', stringsAsFactors = FALSE)) %>%
-#   rbind(data.frame(STATE_NAME=c('Maine', 'New Hampshire', 'Vermont', 'Massachusetts', 'Rhode Island', 'Connecticut',
-#                                 'New Jersey', 'Pennsylvania', 'New York'), group='Northeast', stringsAsFactors = FALSE)) %>%
-#   rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina',
-#                                 'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland',
-#                                 'Delaware', 'Alabama', 'Mississippi'), group='South', stringsAsFactors = FALSE))
-# regions$region <- tolower(regions$STATE_NAME)
-# regions <- rename(regions, area = group)
+regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
+                                     'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>%
+  rbind(data.frame(STATE_NAME=c('Ohio', 'Indiana', 'Illinois', 'Wisconsin', 'Missouri', 'Iowa', 'Minnesota', 'Kansas',
+                                'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='Midwest', stringsAsFactors = FALSE)) %>%
+  rbind(data.frame(STATE_NAME=c('Maine', 'New Hampshire', 'Vermont', 'Massachusetts', 'Rhode Island', 'Connecticut',
+                                'New Jersey', 'Pennsylvania', 'New York'), group='Northeast', stringsAsFactors = FALSE)) %>%
+  rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina',
+                                'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland',
+                                'Delaware', 'Alabama', 'Mississippi'), group='South', stringsAsFactors = FALSE))
+regions$region <- tolower(regions$STATE_NAME)
+regions <- rename(regions, area = group)
 
 secchi.filtered <- secchi.data %>%
   filter(ActivityTypeCode %in% c("Field Msr/Obs","Sample-Routine",
@@ -215,7 +215,7 @@ secchi.filtered <- secchi.data %>%
   filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
-  # filter(!is.na(area)) %>%
+  filter(!is.na(area)) %>%
   mutate(week = lubridate::week(Date))
 
 anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
@@ -316,9 +316,3 @@ final.plot <- secchi.plot +
 final.plot
 ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74, height = 4.14)
 
-
-
-x <- secchi.filtered %>%
-  filter(units == "ft")
-
-boxplot(x$secchi)
