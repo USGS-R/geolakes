@@ -93,7 +93,7 @@ createRecordsBarchart <- function(results_data, type = "percent"){
       coord_flip() + 
       theme_classic() + 
       scale_fill_manual(values = site_cols, name = "Site Type") +
-      theme(axis.text.y = element_text(size = 8)) 
+      theme(axis.text.y = element_text(size = 6)) 
     
   } else if(type == "absolute"){
     # absolute number of records plot
@@ -107,21 +107,27 @@ createRecordsBarchart <- function(results_data, type = "percent"){
       coord_flip() + 
       theme_classic() + 
       scale_fill_manual(values = site_cols, name = "Site Type") +
-      theme(axis.text.y = element_text(size = 8)) 
+      theme(axis.text.y = element_text(size = 6)) 
   }
   
   return(records_plot)
 }
 
-# spark lines added to barchart
-plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y"))){
+# spark lines + barchart
+plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys.time(), "%Y")),
+                                   allCountsFile = 'data/wqp_database_counts.csv'){
   
   library(dplyr)
   library(ggplot2)
   library(gtable)
   library(grid)
   
-  temporal_data <- read.csv('data/wqp_database_counts.csv', stringsAsFactors = FALSE)
+  if(!dir.exists('figures')){dir.create('figures')}
+  
+  temporal_data <- read.csv(allCountsFile, stringsAsFactors = FALSE)
+  # replace NA values w/ 0
+  temporal_data$numSites[is.na(temporal_data$numSites)] <- 0
+  temporal_data$numResults[is.na(temporal_data$numResults)] <- 0
     
   total_bar <- temporal_data %>% 
     group_by(siteType) %>% 
@@ -211,8 +217,8 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
                        t=7, l=4, b=7, r=4)
   
   grid.newpage()
-  png('figures/records_w_sparklines.png', width = 600)
   grid.draw(g)
+  ggsave(filename='figures/records_w_sparklines.pdf', height=115, width=190, units='mm', dpi=2242, g)
   dev.off()
 }
 
