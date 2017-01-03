@@ -222,6 +222,19 @@ anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va
 
 secchi.filtered <- secchi.filtered[-anyDups,]
 
+unit.map <- data.frame(units=c('m','in','ft','cm',"mm","mi", NA), 
+                       convert = c(1,0.0254,0.3048,0.01, 0.001, 1609.34, NA), 
+                       stringsAsFactors = FALSE)
+
+secchi.filtered$units <- gsub(" ", "", secchi.filtered$units)
+
+secchi.filtered <- secchi.filtered %>%
+  filter(units %in% c('m','in','ft','cm','mm','mi')) %>%
+  select(-convert, -secchi) %>%
+  left_join(unit.map, by="units") %>%
+  mutate(secchi=value*convert) %>%
+  mutate(secchi = abs(secchi))
+
 secchi.filtered <- filter(secchi.filtered, secchi > 0, secchi < 46) #meters
 
 group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
@@ -301,3 +314,9 @@ final.plot <- secchi.plot +
 final.plot
 ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74, height = 4.14)
 
+
+
+x <- secchi.filtered %>%
+  filter(units == "ft")
+
+boxplot(x$secchi)
