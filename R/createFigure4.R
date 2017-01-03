@@ -216,7 +216,8 @@ secchi.filtered <- secchi.data %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
   filter(!is.na(area)) %>%
-  mutate(week = lubridate::week(Date))
+  mutate(week = lubridate::week(Date)) %>%
+  filter(MonitoringLocationTypeName == "Lake, Reservoir, Impoundment")
 
 anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
 
