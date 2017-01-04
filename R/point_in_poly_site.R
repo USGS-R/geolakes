@@ -35,8 +35,17 @@ pts = SpatialPoints(xy, proj4string=CRS("+proj=longlat +datum=WGS84"))
 
 
 split_combine <- function(pts, feature){
-  if (length(pts) > 50000){
-    cbind(rgeos::gWithin(pts[1:50000], feature, byid = TRUE), rgeos::gWithin(pts[50001:length(pts)], feature, byid = TRUE))
+  
+  if (length(feature) > 20000){
+    if (length(feature) < 40000){
+      cbind(rgeos::gWithin(pts[1:50000], feature, byid = TRUE), 
+            rgeos::gWithin(pts[50001:length(pts)], feature, byid = TRUE))
+    } else {
+      cbind(rgeos::gWithin(pts[1:40000], feature, byid = TRUE), 
+            rgeos::gWithin(pts[40001:80000], feature, byid = TRUE),
+            rgeos::gWithin(pts[80001:length(pts)], feature, byid = TRUE))
+    }
+    
   } else{
     rgeos::gWithin(pts, feature, byid = TRUE)
   }
