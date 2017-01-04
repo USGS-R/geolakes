@@ -1,4 +1,4 @@
-
+secchi.data <- readRDS("datasets/all_secchi_usa.rds")
 wqx.pip <- readRDS("datasets/wqx_ids_PiP.rds")
 # all records:
 nrow(secchi.data)
