@@ -173,10 +173,12 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               startDateHi = '2016-01-01',
               stride = "20 years")
  
-infile <- "sub_secchi_AL_MN.rds"
+infile <- "datasets/all_secchi_usa.rds"
 secchi.data <- readRDS(infile)
-
+wqx.pip <- readRDS("datasets/wqx_ids_PiP.rds")
 # 2. Group states into regions and get only df with necessary info
+
+use.types <- c('Lake','Reservoir', 'Lake, Reservoir, Impoundment', 'Great Lake')
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
                                      'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>%
@@ -190,61 +192,83 @@ regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington'
 regions$region <- tolower(regions$STATE_NAME)
 regions <- rename(regions, area = group)
 
-secchi.filtered <- secchi.data %>%
+# all records:
+nrow(secchi.data)
+secchi.data %>% filter(MonitoringLocationTypeName %in% use.types) %>% nrow
+secchi.data %>% filter(MonitoringLocationTypeName %in% use.types, wqx.id %in% wqx.pip) %>% nrow
+is.dup <- secchi.data %>% filter(MonitoringLocationTypeName %in% use.types, wqx.id %in% wqx.pip) %>% 
+  select(Date, dec_lat_va, dec_lon_va, value) %>% duplicated
+sum(is.dup)
+non.dups <- secchi.data %>% filter(MonitoringLocationTypeName %in% use.types, wqx.id %in% wqx.pip) %>% .[!is.dup, ] 
+non.qas <- non.dups %>% 
   filter(ActivityTypeCode %in% c("Field Msr/Obs","Sample-Routine",
                                  "Field Msr/Obs-Portable Data Logger",
                                  "Sample-Composite Without Parents",
                                  "Sample-Field Split","Sample-Other")) %>%
-  filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
-  left_join(stateCd, by=c("StateCode" = "STATE")) %>%
-  left_join(regions, by="STATE_NAME") %>%
-  filter(!is.na(area)) %>%
-  mutate(week = lubridate::week(Date)) %>%
-  filter(MonitoringLocationTypeName == "Lake, Reservoir, Impoundment")
-
-anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
-
-secchi.filtered <- secchi.filtered[-anyDups,]
+  filter(ActivityMediaName %in% c("Water","Other","Habitat"))
+nrow(non.dups) - nrow(non.qas)
 
 unit.map <- data.frame(units=c('m','in','ft','cm',"mm","mi", NA), 
                        convert = c(1,0.0254,0.3048,0.01, 0.001, 1609.34, NA), 
                        stringsAsFactors = FALSE)
 
-secchi.filtered$units <- gsub(" ", "", secchi.filtered$units)
-
-secchi.filtered <- secchi.filtered %>%
-  filter(units %in% c('m','in','ft','cm','mm','mi')) %>%
+non.qas$units <- gsub(" ", "", non.qas$units)
+good.units <- non.qas %>%
+  filter(units %in% unit.map$units) %>%
   select(-convert, -secchi) %>%
-  left_join(unit.map, by="units") %>%
+  left_join(unit.map, by="units") %>% filter(!is.na(units)) %>%
   mutate(secchi = value*convert) %>%
   mutate(secchi = abs(secchi))
 
-secchi.filtered <- filter(secchi.filtered, secchi > 0, secchi < 46) #meters
+nrow(non.qas) - nrow(good.units)
 
-#Number of sites:
-group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
-#Number of records:
-table(select(secchi.filtered, area))
 
-df <- data.frame(table(select(secchi.filtered, StateCode)))
-df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE"))
-df <- arrange(df, desc(Freq))
+secchi.filtered <- good.units %>% 
+  rename(STATE = StateCode) %>% 
+  left_join(stateCd, by=c("STATE")) %>% 
+  left_join(regions, by="STATE_NAME") %>%
+  mutate(week = lubridate::week(Date)) %>%
+  filter(!is.na(area)) %>% filter(secchi > 0, secchi < 46) #meters
 
-secchi.data.1 <- secchi.filtered %>%
+#Number of sites & number of records:
+iqr <- function(x){
+  paste('[',
+        paste(round(quantile(x, na.rm=TRUE, probs = c(.25,0.75)), 2), collapse=', '),
+        ']', sep='')
+}
+group_by(secchi.filtered, area) %>% 
+  summarize(nSites = length(unique(wqx.id)), 
+            nRecords = length(wqx.id),
+            med = median(secchi, na.rm=TRUE),
+            IQR = iqr(secchi))
+
+secchi.filtered %>% .$secchi %>% median(na.rm=TRUE)
+secchi.filtered %>% .$secchi %>% iqr
+
+# state counts for records:
+data.frame(table(select(secchi.filtered, STATE))) %>% 
+  left_join(stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE")) %>% 
+  arrange(desc(Freq))
+
+# records per week per region:
+secchi.filtered %>%
+  filter(week > 13 & week < 47) %>%
+  group_by(week, area) %>% tally %>% arrange(desc(week)) %>% tidyr::spread(value = 'n', key = 'area') %>% data.frame %>% 
+  write.table(file = 'datasets/secchi_records_week.csv', sep = ',', quote=F, row.names = F)
+
+# sites per week per region:
+secchi.filtered %>%
+  filter(week > 13 & week < 47) %>%
+  group_by(week, area) %>% summarize(n=length(unique(wqx.id))) %>% arrange(desc(week)) %>% tidyr::spread(value = 'n', key = 'area') %>% data.frame %>% 
+  write.table(file = 'datasets/secchi_sites_week.csv', sep = ',', quote=F, row.names = F)
+
+
+secchi.data.plot <- secchi.filtered %>%
   filter(week > 13 & week < 47) %>%
   group_by(week, area) %>%
   summarize(med = median(secchi, na.rm=TRUE),
             q25 = quantile(secchi, na.rm=TRUE, probs = .25),
-            q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
-  filter(!is.na(area))
-
-secchi.data.overall <- secchi.filtered %>%
-  filter(week > 13 & week < 47) %>%
-  group_by(area) %>%
-  summarize(med = median(secchi, na.rm=TRUE),
-            q25 = quantile(secchi, na.rm=TRUE, probs = .25),
-            q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
-  filter(!is.na(area))
+            q75 = quantile(secchi, na.rm=TRUE, probs = .75)) 
 
 
 # 3. Plot secchi over time for each region and add a map to show regions
@@ -254,7 +278,7 @@ col.scheme <- c(West = '#283044',
                 Northeast='#2c7fb8',
                 Midwest = '#7FCDBB')
 
-secchi.plot <- ggplot(data=secchi.data.1) +
+secchi.plot <- ggplot(data=secchi.data.plot) +
   geom_line(aes(x=week, y=med, color=area), size=1) +
   scale_color_manual(values=col.scheme) +
   ylab("Secchi depth (m)") +
@@ -298,5 +322,5 @@ final.plot <- secchi.plot +
                     xmin=30, xmax=52,
                     ymin=4, ymax=5.5)
 final.plot
-ggsave(plot = final.plot, filename = "secchi.pdf", width = 3.74, height = 4.14)
+ggsave(plot = final.plot, filename = "figures/secchi.pdf", width = 3.74, height = 4.14)
 
