@@ -17,47 +17,31 @@ get_us_secchi = function(outfile,
   metadata <- NULL
   secchi <- NULL
   
-  if(all(stateCode == "All")){
-    
-    params <- list(startDateLo = startDateLo, 
-                   startDateHi = startDateHi, 
-                   characteristicName=characteristicNames, 
-                   stride=stride)
-    
-    if(siteTypes != "All"){
-      params <- append(params, list(siteType = siteTypes))
-    }
-
+  params <- list(startDateLo = startDateLo, 
+                 startDateHi = startDateHi, 
+                 characteristicName=characteristicNames, 
+                 stride=stride)
+  if(siteTypes != "All"){
+    params <- append(params, list(siteType = siteTypes))
+  }
+  
+  fetch_bind <- function(secchi, params){
     secchi.state <-  do.call(readWQPdataPaged, params)
     
-    secchi.state <- secchi.state %>% 
-      left_join(unit.map, by='units') %>% 
-      mutate(secchi=value*convert) 
-    
-    secchi <- secchi.state
+    if(!is.null(secchi.state)){
+      secchi.state <- secchi.state %>% 
+        left_join(unit.map, by='units') %>% 
+        mutate(secchi=value*convert) 
+      
+      secchi <- bind_rows(secchi, secchi.state)
+    }
+    return(secchi)
+  }
+  if(all(stateCode == "All")){
+    secchi <- fetch_bind(secchi, params)
   } else {
-  
     for(state in stateCode){
-      
-      params <- list(startDateLo = startDateLo, 
-                     startDateHi = startDateHi, 
-                     characteristicName=characteristicNames, 
-                     statecode = state,
-                     stride=stride)
-      
-      if(siteTypes != "All"){
-        params <- append(params, list(siteType = siteTypes))
-      }
-      
-      secchi.state <-  do.call(readWQPdataPaged, params)
-
-      if(!is.null(secchi.state)){
-        secchi.state <- secchi.state %>% 
-          left_join(unit.map, by='units') %>% 
-          mutate(secchi=value*convert) 
-        
-        secchi <- bind_rows(secchi, secchi.state)
-      }
+      secchi <- fetch_bind(secchi, params = append(params, list(statecode = state)))
     }
   }
   
@@ -105,7 +89,6 @@ readWQPdataPaged = function(...,
     
     if(starts[[i]] != ends[[i]]){
       chunk.call = do.call(readWQPdata, params)
-    
       if(!is.null(chunk.call)){
         meta <- attr(chunk.call, "siteInfo") %>%
           select(MonitoringLocationIdentifier, dec_lat_va, dec_lon_va, StateCode, MonitoringLocationTypeName)
