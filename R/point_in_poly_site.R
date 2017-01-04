@@ -54,7 +54,7 @@ split_combine <- function(pts, feature){
 
 use.idx <- rep(FALSE, length(pts))
 
-for (state in states){
+for (state in states[43:49]){
   shp.name <- as.layer_name(state)
   feature <- suppressWarnings(rgdal::readOGR(dsn=file.path('../NPS-USGS-proposal/data/.cache', shp.name, paste0(shp.name,".gdb")), layer="NHDWaterbody", verbose = FALSE)) 
   feature <- feature[feature$FType %in% c(390, 436, 361), ]
@@ -67,3 +67,4 @@ for (state in states){
 
 use.sites <- sites[use.idx, ] 
 use.ids <- use.sites$wqx.id
+saveRDS(use.ids, 'datasets/wqx_ids_PiP.rds')
