@@ -91,17 +91,30 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   # loop
   # AGU 1/2 page vertical figure: 95 mm x 230 mm
   # from https://publications.agu.org/author-resource-center/graphics/
+  
   png(filename = figure.name, width = 95, height=230, res=300, units = 'mm')
   plot.order <- t(matrix(data = seq_len(length(sites)+2), nrow=2))
   plot.order[(length(sites)/2)+1,2] <- plot.order[(length(sites)/2)+1,1]
-  layout(plot.order)
+  #matrix(c(1:(length(sites)/2), 
+  #browser()
+  plot.mat <- matrix(c(0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,16,16,
+                       rep(c(17,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,16,16),6),
+                       rep(c(18,11,11,11,12,12,12,13,13,13,14,14,14,15,15,15,16,16),6)), ncol=13)
+  layout(plot.mat)
+  labels <- c("arsenic", "nitrogen", "phosphorus", "secchi", "temperature")
+  par(mai = c(0,0,0,0), omi = c(0,0,0,0)) #c(0.04,.1,0,0)
+  for (j in 1:(length(sites)/2)){
+    plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
+    lims <- par("usr")
+    #rect(lims[1], lims[3],lims[2], lims[4], col = "gray96", border = 'white', lwd=2)
+    text(0.5,0.55, labels[j], srt = 90, cex=1.5)
+  }
   
-  par(mai = c(0.04,.1,0,0), omi = c(0,0,0,0))
   for (j in 1:length(sites)){
-
     plot_huc(hucs, sites[[j]], map.config)
     text(-1824607.9, 900000, paste0(letters[j],')'), cex = 1.5)
   }
+  
   # secondary plot for color legend
   key.cols = c(map.config$missing_data, colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(map.config$countBins)-1))
   par(mai = c(0,0,0,0))
@@ -109,15 +122,19 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   mar.spc <- 0.00
   spc = .02
   bin.w <- (1-(mar.spc*2+spc*(length(key.cols)-1)))/length(key.cols)
-  bin.h <- 0.2 
-  y.spc <- 0.45
+  bin.h <- 0.25 
+  y.spc <- 0.55
   
-  #text(.1,.5, 'Number of sites', pos=3, offset=0.1)
   for(i in 1:length(key.cols)){
     x1 = mar.spc+(i-1)*(bin.w+spc)
     graphics::rect(x1, y.spc, x1+bin.w, bin.h+y.spc, col=key.cols[i], lwd=NA)
     text(x1+bin.w/2, y=y.spc, labels=map.config$countBins[i], pos=1)
   }
-  text(.5,y.spc-0.2, 'Number of sites', pos=1, offset=0.1, cex=2)
+  text(.5,y.spc-0.3, 'Number of sites', pos=1, offset=0.1, cex=2)
+  
+  plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
+  text(0.5,0.5, "Lake sites", cex=1.5)
+  plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
+  text(0.5,0.5, "All sites", cex=1.5)
   dev.off()
 }
