@@ -22,17 +22,17 @@ get_us_secchi = function(outfile,
     params <- list(startDateLo = startDateLo, 
                    startDateHi = startDateHi, 
                    characteristicName=characteristicNames, 
-                   siteType = ifelse(any(siteTypes != "All"), siteTypes,NULL),
                    stride=stride)
     
-    params <- params[!unlist(lapply(params, is.null))]
-    
+    if(siteTypes != "All"){
+      params <- append(params, list(siteType = siteTypes))
+    }
+
     secchi.state <-  do.call(readWQPdataPaged, params)
     
     secchi.state <- secchi.state %>% 
       left_join(unit.map, by='units') %>% 
-      mutate(secchi=value*convert) %>% 
-      filter(!is.na(secchi)) 
+      mutate(secchi=value*convert) 
     
     secchi <- secchi.state
   } else {
@@ -43,18 +43,18 @@ get_us_secchi = function(outfile,
                      startDateHi = startDateHi, 
                      characteristicName=characteristicNames, 
                      statecode = state,
-                     siteType = ifelse(any(siteTypes != "All"), siteTypes,NULL),
                      stride=stride)
       
-      params <- params[!unlist(lapply(params, is.null))]
+      if(siteTypes != "All"){
+        params <- append(params, list(siteType = siteTypes))
+      }
       
       secchi.state <-  do.call(readWQPdataPaged, params)
 
       if(!is.null(secchi.state)){
         secchi.state <- secchi.state %>% 
           left_join(unit.map, by='units') %>% 
-          mutate(secchi=value*convert) %>% 
-          filter(!is.na(secchi)) 
+          mutate(secchi=value*convert) 
         
         secchi <- bind_rows(secchi, secchi.state)
       }
@@ -108,7 +108,7 @@ readWQPdataPaged = function(...,
     
       if(!is.null(chunk.call)){
         meta <- attr(chunk.call, "siteInfo") %>%
-          select(MonitoringLocationIdentifier, dec_lat_va, dec_lon_va, StateCode)
+          select(MonitoringLocationIdentifier, dec_lat_va, dec_lon_va, StateCode, MonitoringLocationTypeName)
         
         chunk.call <- rename(chunk.call, 
                              Date=ActivityStartDate, 
@@ -119,12 +119,13 @@ readWQPdataPaged = function(...,
           mutate(StateCode = as.character(StateCode),
                  ActivityTypeCode = as.character(ActivityTypeCode),
                  ActivityMediaName = as.character(ActivityMediaName),
-                 ResultStatusIdentifier = as.character(ResultStatusIdentifier)) %>%
+                 ResultStatusIdentifier = as.character(ResultStatusIdentifier),
+                 MonitoringLocationTypeName = as.character(MonitoringLocationTypeName)) %>%
           select(Date, value, units, wqx.id, 
                  dec_lat_va, dec_lon_va, 
                  StateCode, 
                  ActivityTypeCode,ActivityMediaName,
-                 ResultStatusIdentifier)
+                 ResultStatusIdentifier, MonitoringLocationTypeName)
         
         out[[i]] <- chunk.call       
       }
@@ -171,7 +172,7 @@ characteristicNames = c("Depth, Secchi disk depth",
 
 # To get the full data set used to produce the figure in the text:
 # This takes roughly 1 hour to complete:
-# get_us_secchi(outfile="all_secchi_usa_lakes.rds",
+# get_us_secchi(outfile="all_secchi_usa.rds",
 #               characteristicNames,
 #               siteTypes = "Lake, Reservoir, Impoundment",
 #               stateCode = "All",
@@ -188,21 +189,20 @@ get_us_secchi(outfile="sub_secchi_AL_MN.rds",
               startDateLo = '2000-01-01',
               startDateHi = '2016-01-01',
               stride = "20 years")
-
+ 
 infile <- "sub_secchi_AL_MN.rds"
 secchi.data <- readRDS(infile)
-
 
 # 2. Group states into regions and get only df with necessary info
 
 regions <- data.frame(STATE_NAME = c('Montana', 'Wyoming', 'Idaho', 'Washington', 'Oregon', 'California', 'Nevada',
-                                     'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>% 
+                                     'Arizona', 'New Mexico', 'Colorado', 'Utah'), group='West', stringsAsFactors = FALSE) %>%
   rbind(data.frame(STATE_NAME=c('Ohio', 'Indiana', 'Illinois', 'Wisconsin', 'Missouri', 'Iowa', 'Minnesota', 'Kansas',
-                                'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='Midwest', stringsAsFactors = FALSE)) %>% 
-  rbind(data.frame(STATE_NAME=c('Maine', 'New Hampshire', 'Vermont', 'Massachusetts', 'Rhode Island', 'Connecticut', 
-                                'New Jersey', 'Pennsylvania', 'New York'), group='Northeast', stringsAsFactors = FALSE)) %>% 
-  rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina', 
-                                'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland', 
+                                'Nebraska', 'South Dakota', 'North Dakota', 'Michigan'), group='Midwest', stringsAsFactors = FALSE)) %>%
+  rbind(data.frame(STATE_NAME=c('Maine', 'New Hampshire', 'Vermont', 'Massachusetts', 'Rhode Island', 'Connecticut',
+                                'New Jersey', 'Pennsylvania', 'New York'), group='Northeast', stringsAsFactors = FALSE)) %>%
+  rbind(data.frame(STATE_NAME=c('Florida', 'Georgia', 'Louisiana', 'Arkansas', 'Oklahoma', 'Texas', 'South Carolina',
+                                'North Carolina', 'Virginia', 'Kentucky', 'Tennessee', 'West Virginia', 'Maryland',
                                 'Delaware', 'Alabama', 'Mississippi'), group='South', stringsAsFactors = FALSE))
 regions$region <- tolower(regions$STATE_NAME)
 regions <- rename(regions, area = group)
@@ -213,41 +213,62 @@ secchi.filtered <- secchi.data %>%
                                  "Sample-Composite Without Parents",
                                  "Sample-Field Split","Sample-Other")) %>%
   filter(ActivityMediaName %in% c("Water","Other","Habitat")) %>%
-  filter(!is.na(StateCode)) %>%
   left_join(stateCd, by=c("StateCode" = "STATE")) %>%
   left_join(regions, by="STATE_NAME") %>%
   filter(!is.na(area)) %>%
-  mutate(week = lubridate::week(Date)) 
+  mutate(week = lubridate::week(Date)) %>%
+  filter(MonitoringLocationTypeName == "Lake, Reservoir, Impoundment")
 
+anyDups <- which(duplicated(select(secchi.filtered, Date, dec_lat_va, dec_lon_va, value)))
+
+secchi.filtered <- secchi.filtered[-anyDups,]
+
+unit.map <- data.frame(units=c('m','in','ft','cm',"mm","mi", NA), 
+                       convert = c(1,0.0254,0.3048,0.01, 0.001, 1609.34, NA), 
+                       stringsAsFactors = FALSE)
+
+secchi.filtered$units <- gsub(" ", "", secchi.filtered$units)
+
+secchi.filtered <- secchi.filtered %>%
+  filter(units %in% c('m','in','ft','cm','mm','mi')) %>%
+  select(-convert, -secchi) %>%
+  left_join(unit.map, by="units") %>%
+  mutate(secchi = value*convert) %>%
+  mutate(secchi = abs(secchi))
+
+secchi.filtered <- filter(secchi.filtered, secchi > 0, secchi < 46) #meters
+
+#Number of sites:
 group_by(secchi.filtered, area) %>% summarize(nSites = length(unique(wqx.id)))
+#Number of records:
 table(select(secchi.filtered, area))
 
 df <- data.frame(table(select(secchi.filtered, StateCode)))
 df <- left_join(df, stateCd[,c("STATE","STATE_NAME")], by=c("Var1"="STATE"))
 df <- arrange(df, desc(Freq))
 
-secchi.data.1 <- secchi.filtered %>% 
+secchi.data.1 <- secchi.filtered %>%
   filter(week > 13 & week < 47) %>%
   group_by(week, area) %>%
   summarize(med = median(secchi, na.rm=TRUE),
             q25 = quantile(secchi, na.rm=TRUE, probs = .25),
             q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
-  filter(!is.na(area)) 
+  filter(!is.na(area))
 
-secchi.data.overall <- secchi.filtered %>% 
+secchi.data.overall <- secchi.filtered %>%
   filter(week > 13 & week < 47) %>%
   group_by(area) %>%
   summarize(med = median(secchi, na.rm=TRUE),
             q25 = quantile(secchi, na.rm=TRUE, probs = .25),
             q75 = quantile(secchi, na.rm=TRUE, probs = .75)) %>%
-  filter(!is.na(area)) 
-  
+  filter(!is.na(area))
+
 
 # 3. Plot secchi over time for each region and add a map to show regions
 
-col.scheme <- c(West = '#283044', 
+col.scheme <- c(West = '#283044',
                 South = '#F7CB65',
-                Northeast='#2c7fb8', 
+                Northeast='#2c7fb8',
                 Midwest = '#7FCDBB')
 
 secchi.plot <- ggplot(data=secchi.data.1) +
@@ -255,11 +276,11 @@ secchi.plot <- ggplot(data=secchi.data.1) +
   scale_color_manual(values=col.scheme) +
   ylab("Secchi depth (m)") +
   xlab("") +
-  theme_bw() + 
+  theme_bw() +
   theme(legend.position="none",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_rect(size = 1, color="black")) + 
+        panel.border = element_rect(size = 1, color="black")) +
   expand_limits(y = 0) +
   scale_y_continuous(expand = c(0, 0), limits = c(0,5.5)) +
   scale_x_continuous(labels = c("May","Jul", "Sep", "Nov"),
@@ -275,7 +296,7 @@ map.legend <- ggplot(data=fill.states) +
   theme_bw() +
   theme(legend.position="none",
         panel.background = element_blank(),
-        panel.border = element_blank(), 
+        panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_blank(),
@@ -284,13 +305,13 @@ map.legend <- ggplot(data=fill.states) +
         panel.margin = unit(c(0, 0, 0, 0), "cm"),
         plot.background = element_rect(fill = "transparent",colour = NA))  +
   scale_fill_manual(values = col.scheme) +
-  scale_y_continuous(expand = c(0,0)) + 
+  scale_y_continuous(expand = c(0,0)) +
   scale_x_continuous(expand = c(0,0))
 
 g2 = ggplotGrob(map.legend)
 
 final.plot <- secchi.plot +
-  annotation_custom(grob = g2, 
+  annotation_custom(grob = g2,
                     xmin=30, xmax=52,
                     ymin=4, ymax=5.5)
 final.plot
