@@ -93,10 +93,6 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   # from https://publications.agu.org/author-resource-center/graphics/
   
   png(filename = figure.name, width = 95, height=230, res=300, units = 'mm')
-  plot.order <- t(matrix(data = seq_len(length(sites)+2), nrow=2))
-  plot.order[(length(sites)/2)+1,2] <- plot.order[(length(sites)/2)+1,1]
-  #matrix(c(1:(length(sites)/2), 
-  #browser()
   plot.mat <- matrix(c(0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,16,16,
                        rep(c(17,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,16,16),6),
                        rep(c(18,11,11,11,12,12,12,13,13,13,14,14,14,15,15,15,16,16),6)), ncol=13)
