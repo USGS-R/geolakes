@@ -6,7 +6,6 @@ packages:
   - yaml
   - RColorBrewer
   - dataRetrieval
-  - TeachingDemos
   - lubridate
   - maptools
   - rgeos
@@ -80,4 +79,4 @@ targets:
   figures/multi_panel_constituents.png:
     command: plot_huc_panel(huc.map, map.config, target_name, arsenic_lakes, arsenic_all, nitrogen_lakes, nitrogen_all, phosphorus_lakes, phosphorus_all, secchi_lakes, secchi_all, temperature_lakes, temperature_all)
     plot: true
-    
+
