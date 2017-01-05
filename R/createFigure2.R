@@ -300,7 +300,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   
   # get bar chart for number of records
   records_plot <- createRecordsBarchart(results_data) +
-    guides(fill = guide_legend(title = NULL, nrow = 1, ncol = 6))
+    guides(fill = guide_legend(title = NULL, nrow = 1, ncol = 6, reverse = TRUE))
   tmp <- ggplot_gtable(ggplot_build(records_plot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   records_plot_legend <- tmp$grobs[[leg]]
