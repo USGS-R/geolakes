@@ -94,15 +94,14 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   
   png(filename = figure.name, width = 95, height=230, res=300, units = 'mm')
   plot.mat <- matrix(c(0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,16,16,
-                       rep(c(17,6,6,6,7,7,7,8,8,8,9,9,9,10,10,10,16,16),6),
-                       rep(c(18,11,11,11,12,12,12,13,13,13,14,14,14,15,15,15,16,16),6)), ncol=13)
+                       rep(c(17,6,6,6,8,8,8,10,10,10,12,12,12,14,14,14,16,16),6),
+                       rep(c(18,7,7,7,9,9,9,11,11,11,13,13,13,15,15,15,16,16),6)), ncol=13)
   layout(plot.mat)
   labels <- c("arsenic", "nitrogen", "phosphorus", "secchi", "temperature")
   par(mai = c(0,0,0,0), omi = c(0,0,0,0)) #c(0.04,.1,0,0)
   for (j in 1:(length(sites)/2)){
     plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
     lims <- par("usr")
-    #rect(lims[1], lims[3],lims[2], lims[4], col = "gray96", border = 'white', lwd=2)
     text(0.5,0.55, labels[j], srt = 90, cex=1.5)
   }
   
