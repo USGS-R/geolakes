@@ -97,7 +97,7 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
                        rep(c(17,6,6,6,8,8,8,10,10,10,12,12,12,14,14,14,16,16),6),
                        rep(c(18,7,7,7,9,9,9,11,11,11,13,13,13,15,15,15,16,16),6)), ncol=13)
   layout(plot.mat)
-  labels <- c("arsenic", "nitrogen", "phosphorus", "secchi", "temperature")
+  labels <- c("Arsenic", "Nitrogen", "Phosphorus", "Secchi", "Temperature")
   par(mai = c(0,0,0,0), omi = c(0,0,0,0)) #c(0.04,.1,0,0)
   for (j in 1:(length(sites)/2)){
     plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
@@ -128,8 +128,8 @@ plot_huc_panel <- function(hucs, map.config, figure.name, ...){
   text(.5,y.spc-0.3, 'Number of sites', pos=1, offset=0.1, cex=2)
   
   plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
-  text(0.5,0.5, "Lake sites", cex=1.5)
+  text(0.45,0.2, "Lake sites", cex=1.5)
   plot(0,NA, axes=F, xlim=c(0,1), ylim=c(0,1))
-  text(0.5,0.5, "All sites", cex=1.5)
+  text(0.45,0.2, "All sites", cex=1.5)
   dev.off()
 }
