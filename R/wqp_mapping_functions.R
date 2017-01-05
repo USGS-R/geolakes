@@ -38,37 +38,14 @@ mutate_wqp_site <- function(sites, config){
 }
 
 plot_huc_sites <- function(hucs, sites, map.config, figure.name){
-  point.in = gContains(hucs, sites, byid=TRUE)
-  counts.by.id = colSums(point.in) %>% log
   
-  counts.by.id[!is.finite(counts.by.id)] <- NA
-
-  ## -- color markers --
-
-  key.bins = c(NA, log(axTicks(1, axp=c(1, max(exp(counts.by.id)), 3), usr=c(1,3), log=TRUE)))
-  bins = key.bins
-  pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins)-1)
-  key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins)-1)
-
-  pal <- c(map.config$missing_data, pal) # 0 is grey
-  key.cols <- c(map.config$missing_data, key.cols)  # 0 is grey
-  key.text <- c(0, tail(exp(key.bins), -1))
-  #get closest bin
-  bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),1,which.min(abs(x-bins)))))
-  cols = rep(NA, length(counts.by.id))
-  cols[!is.na(bin)] = pal[bin[!is.na(bin)]]
 
   png(filename = figure.name, width = 7, heigh=5, res=150, units = 'in')
   layout(matrix(data = c(1,1,1,1,1,1,2), ncol=1))
   par(mai = c(0,0,0,0), omi = c(0,0,0,0))
-  par(mai = c(0,0,0,0), omi = c(0,0,0,0))
-
-  xlim <- c(-1534607.9,2050000.1) # specific to the transform we are using
-  ylim <- c(-2072574.6,727758.7)
-
-  plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
-  #plot(sites, add=TRUE, col='red',pch=20,cex=0.2)
-
+  
+  plot_huc(hucs, sites, map.config)
+  key.cols = c(map.config$missing_data, colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(map.config$countBins)-1))
   # secondary plot for color legend
   plot(c(NA,NA),c(NA,NA), axes=F, ylim=c(0,1),xlim=c(0,1))
   bin.w = 0.05
@@ -77,8 +54,70 @@ plot_huc_sites <- function(hucs, sites, map.config, figure.name){
   for(i in 1:length(key.cols)){
     x1 = 0.20+(i-1)*(bin.w+spc)
     graphics::rect(x1, 0.3, x1+bin.w, 0.8, col=key.cols[i], lwd=NA)
-    text(x1+bin.w/2, y=0.33, labels=key.text[i], pos=1)
+    text(x1+bin.w/2, y=0.33, labels=map.config$countBins[i], pos=1)
   }
+  
   dev.off()
 }
 
+plot_huc <- function(hucs, sites, map.config){
+  point.in = gContains(hucs, sites, byid=TRUE)
+  counts.by.id = colSums(point.in) %>% log
+  
+  counts.by.id[!is.finite(counts.by.id)] <- NA
+  
+  ## -- color markers --
+  key.bins = c(NA, log(tail(map.config$countBins, -1L)))
+  bins = key.bins
+  pal = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(bins)-1)
+  key.cols = colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(key.bins)-1)
+  
+  pal <- c(map.config$missing_data, pal) # 0 is grey
+  key.cols <- c(map.config$missing_data, key.cols)  # 0 is grey
+  key.text <- map.config$countBins
+  #get closest bin
+  bin = unname(sapply(counts.by.id, function(x) ifelse(is.na(x),1,which.min(abs(x-bins)))))
+  cols = rep(NA, length(counts.by.id))
+  cols[!is.na(bin)] = pal[bin[!is.na(bin)]]
+  
+  xlim <- c(-1834607.9,2750000.1) # specific to the transform we are using
+  ylim <- c(-2072574.6,727758.7)
+  
+  plot(hucs, add = FALSE, col = cols, border = NA, lwd = 0.5, xlim = xlim, ylim = ylim)
+}
+#' @importFrom 
+plot_huc_panel <- function(hucs, map.config, figure.name, ...){
+  sites <- list(...) #verify even number
+  # loop
+  # AGU 1/2 page vertical figure: 95 mm x 230 mm
+  # from https://publications.agu.org/author-resource-center/graphics/
+  png(filename = figure.name, width = 95, height=230, res=300, units = 'mm')
+  plot.order <- t(matrix(data = seq_len(length(sites)+2), nrow=2))
+  plot.order[(length(sites)/2)+1,2] <- plot.order[(length(sites)/2)+1,1]
+  layout(plot.order)
+  
+  par(mai = c(0.04,.1,0,0), omi = c(0,0,0,0))
+  for (j in 1:length(sites)){
+
+    plot_huc(hucs, sites[[j]], map.config)
+    text(-1824607.9, 900000, paste0(letters[j],')'), cex = 1.5)
+  }
+  # secondary plot for color legend
+  key.cols = c(map.config$missing_data, colorRampPalette(brewer.pal(9, 'YlGnBu'))(length(map.config$countBins)-1))
+  par(mai = c(0,0,0,0))
+  plot(c(NA,NA),c(NA,NA), axes=F, ylim=c(0,1),xlim=c(0,1))
+  mar.spc <- 0.00
+  spc = .02
+  bin.w <- (1-(mar.spc*2+spc*(length(key.cols)-1)))/length(key.cols)
+  bin.h <- 0.2 
+  y.spc <- 0.45
+  
+  #text(.1,.5, 'Number of sites', pos=3, offset=0.1)
+  for(i in 1:length(key.cols)){
+    x1 = mar.spc+(i-1)*(bin.w+spc)
+    graphics::rect(x1, y.spc, x1+bin.w, bin.h+y.spc, col=key.cols[i], lwd=NA)
+    text(x1+bin.w/2, y=y.spc, labels=map.config$countBins[i], pos=1)
+  }
+  text(.5,y.spc-0.2, 'Number of sites', pos=1, offset=0.1, cex=2)
+  dev.off()
+}

@@ -2,3 +2,4 @@ missing_data: 'grey90'
 plot_CRS: "+init=epsg:2163"
 wfs: 'http://cida.usgs.gov/gdp/geoserver/wfs'
 feature: 'derivative:wbdhu8_alb_simp'
+countBins: [ 0,1,2,5,10,20,50,100,200,500,1000]
