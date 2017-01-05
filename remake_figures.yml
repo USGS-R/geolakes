@@ -17,13 +17,10 @@ packages:
 sources:
   - R/wqp_mapping_functions.R
   - R/readWQPdataPaged.R
-  - R/get_all_us_secchi.R
-  - R/FIGURE_all_us_secchi.R 
 
 targets:
   all:
     depends: 
-      - figures/test.png
       - figures/multi_panel_constituents.png
       
   map.config:
@@ -79,20 +76,8 @@ targets:
     
   glyphosate_all:
     command: get_wqp_data(target_name, wqp.config, map.config)
-  
-  figures/test.png:
-    command: plot_huc_sites(huc.map, secchi_all, map.config, target_name)
-    plot: true
     
   figures/multi_panel_constituents.png:
-      command: plot_huc_panel(huc.map, map.config, target_name, arsenic_lakes, arsenic_all, nitrogen_lakes, nitrogen_all, phosphorus_lakes, phosphorus_all, secchi_lakes, secchi_all, temperature_lakes, temperature_all)
+    command: plot_huc_panel(huc.map, map.config, target_name, arsenic_lakes, arsenic_all, nitrogen_lakes, nitrogen_all, phosphorus_lakes, phosphorus_all, secchi_lakes, secchi_all, temperature_lakes, temperature_all)
     plot: true
     
-  figures/secchi_seasons_regionally.png:
-    command: FIGURE_all_us_secchi('datasets/all_secchi_usa.RData')
-    plot: true
-  
-  #long-running job, commit data
-  #datasets/all_secchi_usa.RData:
-  #  command: get_all_us_secchi(target_name)
-
