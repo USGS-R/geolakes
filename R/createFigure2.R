@@ -260,7 +260,10 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   temporal_data$numSites[is.na(temporal_data$numSites)] <- 0
   temporal_data$numResults[is.na(temporal_data$numResults)] <- 0
   
-  total_bar <- temporal_data %>% 
+  temporal_data <- temporal_data %>% 
+    filter(characteristicType != "Not Assigned")
+  
+  total_bar <- temporal_data %>%
     group_by(siteType) %>% 
     summarize(numSites = sum(numSites),
               numResults = sum(numResults)) %>% 
@@ -270,7 +273,6 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   
   results_data <- temporal_data %>% 
     select(-startDate, -endDate) %>% 
-    filter(characteristicType != "Not Assigned") %>% 
     rbind(total_bar)
   
   # group characteristic types
@@ -298,7 +300,7 @@ plotSparklinesBarchart <- function(startYr = 1950, endYr = as.numeric(format(Sys
   
   # get bar chart for number of records
   records_plot <- createRecordsBarchart(results_data) +
-    guides(fill = guide_legend(title = NULL, nrow = 1, ncol = 6))
+    guides(fill = guide_legend(title = NULL, nrow = 1, ncol = 6, reverse = TRUE))
   tmp <- ggplot_gtable(ggplot_build(records_plot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
   records_plot_legend <- tmp$grobs[[leg]]
