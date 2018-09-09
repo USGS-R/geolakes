@@ -18,7 +18,7 @@ Once the `data/wqp_database_counts.csv` file exists, you can use the plotting fu
 plotSparklinesBarchart()
 ```
 
-This function will create the the barchart with sparklines figure and save it as a PNG in `figures/`. 
+This function will create the barchart with sparklines figure and save it as a PNG in `figures/`. 
 
 </br>
 
